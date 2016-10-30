@@ -1,0 +1,95 @@
+
+<div>
+    <h2><span data-translate="opalaApp.agendamento.detail.title">Agendamento</span> {{vm.agendamento.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="opalaApp.agendamento.data">Data</span></dt>
+        <dd>
+            <span>{{vm.agendamento.data | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.numeroRequisicao">Numero Requisicao</span></dt>
+        <dd>
+            <span>{{vm.agendamento.numeroRequisicao}}</span>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.centroCusto">Centro Custo</span></dt>
+        <dd>
+            <span>{{vm.agendamento.centroCusto}}</span>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.referencia">Referencia</span></dt>
+        <dd>
+            <span>{{vm.agendamento.referencia}}</span>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.valor">Valor</span></dt>
+        <dd>
+            <span>{{vm.agendamento.valor}}</span>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.observacao">Observacao</span></dt>
+        <dd>
+            <span>{{vm.agendamento.observacao}}</span>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.status">Status</span></dt>
+        <dd>
+            <span data-translate="{{'opalaApp.Status.' + vm.agendamento.status}}">{{vm.agendamento.status}}</span>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.sentido">Sentido</span></dt>
+        <dd>
+            <span data-translate="{{'opalaApp.Sentido.' + vm.agendamento.sentido}}">{{vm.agendamento.sentido}}</span>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.pagamento">Pagamento</span></dt>
+        <dd>
+            <span data-translate="{{'opalaApp.Pagamento.' + vm.agendamento.pagamento}}">{{vm.agendamento.pagamento}}</span>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.categoria">Categoria</span></dt>
+        <dd>
+            <span data-translate="{{'opalaApp.Categoria.' + vm.agendamento.categoria}}">{{vm.agendamento.categoria}}</span>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.cliente">Cliente</span></dt>
+        <dd>
+            <a ui-sref="cliente-detail({id:vm.agendamento.cliente.id})">{{vm.agendamento.cliente.id}}</a>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.motorista">Motorista</span></dt>
+        <dd>
+            <a ui-sref="motorista-detail({id:vm.agendamento.motorista.id})">{{vm.agendamento.motorista.id}}</a>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.origem">Origem</span></dt>
+        <dd>
+            <a ui-sref="endereco-detail({id:vm.agendamento.origem.id})">{{vm.agendamento.origem.id}}</a>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.solicitante">Solicitante</span></dt>
+        <dd>
+            <a ui-sref="solicitante-detail({id:vm.agendamento.solicitante.id})">{{vm.agendamento.solicitante.id}}</a>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.veiculo">Veiculo</span></dt>
+        <dd>
+            <a ui-sref="veiculo-detail({id:vm.agendamento.veiculo.id})">{{vm.agendamento.veiculo.id}}</a>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.itinerario">Itinerario</span></dt>
+        <dd>
+            <a ui-sref="itinerario-detail({id:vm.agendamento.itinerario.id})">{{vm.agendamento.itinerario.id}}</a>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.listaPassageiros">Lista Passageiros</span></dt>
+        <dd>
+            <span ng-repeat="listaPassageiros in vm.agendamento.listaPassageiros">
+                <a ui-sref="passageiro-detail({id: listaPassageiros.id})">{{listaPassageiros.id}}</a>{{$last ? '' : ', '}}
+            </span>
+        </dd>
+        <dt><span data-translate="opalaApp.agendamento.listaDestinos">Lista Destinos</span></dt>
+        <dd>
+            <span ng-repeat="listaDestinos in vm.agendamento.listaDestinos">
+                <a ui-sref="endereco-detail({id: listaDestinos.id})">{{listaDestinos.id}}</a>{{$last ? '' : ', '}}
+            </span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="agendamento-detail.edit({id:vm.agendamento.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

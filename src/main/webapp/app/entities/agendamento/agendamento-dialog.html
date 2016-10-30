@@ -1,0 +1,148 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()">
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myAgendamentoLabel" data-translate="opalaApp.agendamento.home.createOrEditLabel">Create or edit a Agendamento</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.agendamento.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.agendamento.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="opalaApp.agendamento.data" for="field_data">Data</label>
+                <div class="input-group">
+                    <input id="field_data" type="text" class="form-control" name="data" datetime-picker="{{dateformat}}" ng-model="vm.agendamento.data" is-open="vm.datePickerOpenStatus.data"
+                      />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('data')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="opalaApp.agendamento.numeroRequisicao" for="field_numeroRequisicao">Numero Requisicao</label>
+            <input type="text" class="form-control" name="numeroRequisicao" id="field_numeroRequisicao"
+                    ng-model="vm.agendamento.numeroRequisicao"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="opalaApp.agendamento.centroCusto" for="field_centroCusto">Centro Custo</label>
+            <input type="text" class="form-control" name="centroCusto" id="field_centroCusto"
+                    ng-model="vm.agendamento.centroCusto"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="opalaApp.agendamento.referencia" for="field_referencia">Referencia</label>
+            <input type="text" class="form-control" name="referencia" id="field_referencia"
+                    ng-model="vm.agendamento.referencia"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="opalaApp.agendamento.valor" for="field_valor">Valor</label>
+            <input type="number" class="form-control" name="valor" id="field_valor"
+                    ng-model="vm.agendamento.valor"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="opalaApp.agendamento.observacao" for="field_observacao">Observacao</label>
+            <input type="text" class="form-control" name="observacao" id="field_observacao"
+                    ng-model="vm.agendamento.observacao"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="opalaApp.agendamento.status" for="field_status">Status</label>
+            <select class="form-control" name="status" ng-model="vm.agendamento.status" id="field_status">
+                <option value="AGENDADO" data-translate="opalaApp.Status.AGENDADO">AGENDADO</option>
+                <option value="ENVIADO" data-translate="opalaApp.Status.ENVIADO">ENVIADO</option>
+                <option value="CANCELADO" data-translate="opalaApp.Status.CANCELADO">CANCELADO</option>
+                <option value="ACEITO" data-translate="opalaApp.Status.ACEITO">ACEITO</option>
+                <option value="EM_EXECUCAO" data-translate="opalaApp.Status.EM_EXECUCAO">EM_EXECUCAO</option>
+                <option value="AGUARDANDO_INICIO" data-translate="opalaApp.Status.AGUARDANDO_INICIO">AGUARDANDO_INICIO</option>
+                <option value="EXECUTADO" data-translate="opalaApp.Status.EXECUTADO">EXECUTADO</option>
+                <option value="APROVADO" data-translate="opalaApp.Status.APROVADO">APROVADO</option>
+                <option value="PAGO" data-translate="opalaApp.Status.PAGO">PAGO</option>
+                <option value="FINALIZADO" data-translate="opalaApp.Status.FINALIZADO">FINALIZADO</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="opalaApp.agendamento.sentido" for="field_sentido">Sentido</label>
+            <select class="form-control" name="sentido" ng-model="vm.agendamento.sentido" id="field_sentido">
+                <option value="LEVAR" data-translate="opalaApp.Sentido.LEVAR">LEVAR</option>
+                <option value="BUSCAR" data-translate="opalaApp.Sentido.BUSCAR">BUSCAR</option>
+                <option value="ADISPOSICAO_RETORNO_ATE_2H" data-translate="opalaApp.Sentido.ADISPOSICAO_RETORNO_ATE_2H">ADISPOSICAO_RETORNO_ATE_2H</option>
+                <option value="ADISPOSICAO_RETORNO_ATE_8H" data-translate="opalaApp.Sentido.ADISPOSICAO_RETORNO_ATE_8H">ADISPOSICAO_RETORNO_ATE_8H</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="opalaApp.agendamento.pagamento" for="field_pagamento">Pagamento</label>
+            <select class="form-control" name="pagamento" ng-model="vm.agendamento.pagamento" id="field_pagamento">
+                <option value="FATURADO" data-translate="opalaApp.Pagamento.FATURADO">FATURADO</option>
+                <option value="DIRETO" data-translate="opalaApp.Pagamento.DIRETO">DIRETO</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="opalaApp.agendamento.categoria" for="field_categoria">Categoria</label>
+            <select class="form-control" name="categoria" ng-model="vm.agendamento.categoria" id="field_categoria">
+                <option value="EXECUTIVO" data-translate="opalaApp.Categoria.EXECUTIVO">EXECUTIVO</option>
+                <option value="LUXO" data-translate="opalaApp.Categoria.LUXO">LUXO</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label data-translate="opalaApp.agendamento.cliente" for="field_cliente">Cliente</label>
+            <select class="form-control" id="field_cliente" name="cliente" ng-model="vm.agendamento.cliente" ng-options="cliente as cliente.id for cliente in vm.clientes track by cliente.id">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label data-translate="opalaApp.agendamento.motorista" for="field_motorista">Motorista</label>
+            <select class="form-control" id="field_motorista" name="motorista" ng-model="vm.agendamento.motorista" ng-options="motorista as motorista.id for motorista in vm.motoristas track by motorista.id">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label data-translate="opalaApp.agendamento.origem" for="field_origem">Origem</label>
+            <select class="form-control" id="field_origem" name="origem" ng-model="vm.agendamento.origem" ng-options="endereco as endereco.id for endereco in vm.enderecos track by endereco.id">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label data-translate="opalaApp.agendamento.solicitante" for="field_solicitante">Solicitante</label>
+            <select class="form-control" id="field_solicitante" name="solicitante" ng-model="vm.agendamento.solicitante" ng-options="solicitante as solicitante.id for solicitante in vm.solicitantes track by solicitante.id">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label data-translate="opalaApp.agendamento.veiculo" for="field_veiculo">Veiculo</label>
+            <select class="form-control" id="field_veiculo" name="veiculo" ng-model="vm.agendamento.veiculo" ng-options="veiculo as veiculo.id for veiculo in vm.veiculos track by veiculo.id">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label data-translate="opalaApp.agendamento.itinerario" for="field_itinerario">Itinerario</label>
+            <select class="form-control" id="field_itinerario" name="itinerario" ng-model="vm.agendamento.itinerario" ng-options="itinerario as itinerario.id for itinerario in vm.itinerarios track by itinerario.id">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label data-translate="opalaApp.agendamento.listaPassageiros" for="field_listaPassageiros">Lista Passageiros</label>
+            <select class="form-control" id="field_listaPassageiros" multiple name="listaPassageiros" ng-model="vm.agendamento.listaPassageiros" ng-options="passageiro as passageiro.id for passageiro in vm.passageiros track by passageiro.id"></select>
+        </div>
+        <div class="form-group">
+            <label data-translate="opalaApp.agendamento.listaDestinos" for="field_listaDestinos">Lista Destinos</label>
+            <select class="form-control" id="field_listaDestinos" multiple name="listaDestinos" ng-model="vm.agendamento.listaDestinos" ng-options="endereco as endereco.id for endereco in vm.enderecos track by endereco.id"></select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

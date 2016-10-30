@@ -1,0 +1,15 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "descricao",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20161030192130",
+    "entityTableName": "itinerario",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no"
+}

@@ -1,0 +1,27 @@
+
+<div>
+    <h2><span data-translate="opalaApp.solicitante.detail.title">Solicitante</span> {{vm.solicitante.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="opalaApp.solicitante.nome">Nome</span></dt>
+        <dd>
+            <span>{{vm.solicitante.nome}}</span>
+        </dd>
+        <dt><span data-translate="opalaApp.solicitante.cliente">Cliente</span></dt>
+        <dd>
+            <a ui-sref="cliente-detail({id:vm.solicitante.cliente.id})">{{vm.solicitante.cliente.id}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="solicitante-detail.edit({id:vm.solicitante.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

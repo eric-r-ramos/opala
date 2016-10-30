@@ -1,0 +1,35 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "marca",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "modelo",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "cor",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "placa",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "ano",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "ativo",
+            "fieldType": "Boolean"
+        }
+    ],
+    "changelogDate": "20161030192128",
+    "entityTableName": "veiculo",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no"
+}

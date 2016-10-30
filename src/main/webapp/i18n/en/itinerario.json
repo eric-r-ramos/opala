@@ -1,0 +1,22 @@
+{
+    "opalaApp": {
+        "itinerario" : {
+            "home": {
+                "title": "Itinerarios",
+                "createLabel": "Create a new Itinerario",
+                "createOrEditLabel": "Create or edit a Itinerario",
+                "search": "Search for Itinerario"
+            },
+            "created": "A new Itinerario is created with identifier {{ param }}",
+            "updated": "A Itinerario is updated with identifier {{ param }}",
+            "deleted": "A Itinerario is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Itinerario {{ id }}?"
+            },
+            "detail": {
+                "title": "Itinerario"
+            },
+            "descricao": "Descricao"
+        }
+    }
+}

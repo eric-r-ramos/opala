@@ -1,0 +1,23 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "nome",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "habilitacao",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "vencimentoHabilitacao",
+            "fieldType": "LocalDate"
+        }
+    ],
+    "changelogDate": "20161030192126",
+    "entityTableName": "motorista",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no"
+}

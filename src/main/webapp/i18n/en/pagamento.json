@@ -1,0 +1,9 @@
+{
+    "opalaApp": {
+        "Pagamento" : {
+            "null": "",
+            "FATURADO": "FATURADO",
+            "DIRETO": "DIRETO"
+        }
+    }
+}

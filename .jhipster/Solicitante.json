@@ -1,0 +1,28 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "cliente",
+            "otherEntityName": "cliente",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "listaAgendamentos",
+            "otherEntityName": "agendamento",
+            "otherEntityRelationshipName": "solicitante"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "nome",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20161030192129",
+    "entityTableName": "solicitante",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no"
+}

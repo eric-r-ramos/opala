@@ -1,0 +1,9 @@
+{
+    "opalaApp": {
+        "Categoria" : {
+            "null": "",
+            "EXECUTIVO": "EXECUTIVO",
+            "LUXO": "LUXO"
+        }
+    }
+}

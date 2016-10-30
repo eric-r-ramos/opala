@@ -1,0 +1,24 @@
+{
+    "opalaApp": {
+        "solicitante" : {
+            "home": {
+                "title": "Solicitantes",
+                "createLabel": "Create a new Solicitante",
+                "createOrEditLabel": "Create or edit a Solicitante",
+                "search": "Search for Solicitante"
+            },
+            "created": "A new Solicitante is created with identifier {{ param }}",
+            "updated": "A Solicitante is updated with identifier {{ param }}",
+            "deleted": "A Solicitante is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Solicitante {{ id }}?"
+            },
+            "detail": {
+                "title": "Solicitante"
+            },
+            "nome": "Nome",
+            "cliente": "Cliente",
+            "listaAgendamentos": "Lista Agendamentos"
+        }
+    }
+}

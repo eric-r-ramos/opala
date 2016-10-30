@@ -1,0 +1,39 @@
+{
+    "opalaApp": {
+        "agendamento" : {
+            "home": {
+                "title": "Agendamentos",
+                "createLabel": "Create a new Agendamento",
+                "createOrEditLabel": "Create or edit a Agendamento",
+                "search": "Search for Agendamento"
+            },
+            "created": "A new Agendamento is created with identifier {{ param }}",
+            "updated": "A Agendamento is updated with identifier {{ param }}",
+            "deleted": "A Agendamento is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Agendamento {{ id }}?"
+            },
+            "detail": {
+                "title": "Agendamento"
+            },
+            "data": "Data",
+            "numeroRequisicao": "Numero Requisicao",
+            "centroCusto": "Centro Custo",
+            "referencia": "Referencia",
+            "valor": "Valor",
+            "observacao": "Observacao",
+            "status": "Status",
+            "sentido": "Sentido",
+            "pagamento": "Pagamento",
+            "categoria": "Categoria",
+            "cliente": "Cliente",
+            "motorista": "Motorista",
+            "origem": "Origem",
+            "solicitante": "Solicitante",
+            "veiculo": "Veiculo",
+            "itinerario": "Itinerario",
+            "listaPassageiros": "Lista Passageiros",
+            "listaDestinos": "Lista Destinos"
+        }
+    }
+}

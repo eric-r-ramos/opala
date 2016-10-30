@@ -1,0 +1,22 @@
+{
+    "opalaApp": {
+        "passageiro" : {
+            "home": {
+                "title": "Passageiros",
+                "createLabel": "Criar novo Passageiro",
+                "createOrEditLabel": "Criar ou editar Passageiro",
+                "search": "Pesquisar por Passageiro"
+            },
+            "created": "Um novo Passageiro é criado com o identificador {{ param }}",
+            "updated": "Um Passageiro é atualizado com o identificador {{ param }}",
+            "deleted": "Um Passageiro é deletado com o identificador {{ param }}",
+            "delete": {
+                "question": "Tem certeza de que deseja excluir Passageiro {{ id }}?"
+            },
+            "detail": {
+                "title": "Passageiro"
+            },
+            "nome": "Nome"
+        }
+    }
+}

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--
+        Added the constraints for entity Agendamento.
+    -->
+    <changeSet id="20161030192124-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="cliente_id"
+                                 baseTableName="agendamento"
+                                 constraintName="fk_agendamento_cliente_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cliente"/>
+
+        <addForeignKeyConstraint baseColumnNames="motorista_id"
+                                 baseTableName="agendamento"
+                                 constraintName="fk_agendamento_motorista_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="motorista"/>
+
+        <addForeignKeyConstraint baseColumnNames="origem_id"
+                                 baseTableName="agendamento"
+                                 constraintName="fk_agendamento_origem_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="endereco"/>
+
+        <addForeignKeyConstraint baseColumnNames="solicitante_id"
+                                 baseTableName="agendamento"
+                                 constraintName="fk_agendamento_solicitante_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="solicitante"/>
+
+        <addForeignKeyConstraint baseColumnNames="veiculo_id"
+                                 baseTableName="agendamento"
+                                 constraintName="fk_agendamento_veiculo_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="veiculo"/>
+
+        <addForeignKeyConstraint baseColumnNames="itinerario_id"
+                                 baseTableName="agendamento"
+                                 constraintName="fk_agendamento_itinerario_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="itinerario"/>
+
+        <addForeignKeyConstraint baseColumnNames="agendamentos_id"
+                                 baseTableName="agendamento_lista_passageiros"
+                                 constraintName="fk_agendamento_lista_passageiros_agendamentos_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="agendamento"/>
+        <addForeignKeyConstraint baseColumnNames="lista_passageiros_id"
+                                 baseTableName="agendamento_lista_passageiros"
+                                 constraintName="fk_agendamento_lista_passageiros_lista_passageiros_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="passageiro"/>
+        
+        <addForeignKeyConstraint baseColumnNames="agendamentos_id"
+                                 baseTableName="agendamento_lista_destinos"
+                                 constraintName="fk_agendamento_lista_destinos_agendamentos_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="agendamento"/>
+        <addForeignKeyConstraint baseColumnNames="lista_destinos_id"
+                                 baseTableName="agendamento_lista_destinos"
+                                 constraintName="fk_agendamento_lista_destinos_lista_destinos_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="endereco"/>
+        
+    </changeSet>
+</databaseChangeLog>

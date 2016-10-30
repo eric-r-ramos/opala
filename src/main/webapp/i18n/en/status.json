@@ -1,0 +1,17 @@
+{
+    "opalaApp": {
+        "Status" : {
+            "null": "",
+            "AGENDADO": "AGENDADO",
+            "ENVIADO": "ENVIADO",
+            "CANCELADO": "CANCELADO",
+            "ACEITO": "ACEITO",
+            "EM_EXECUCAO": "EM_EXECUCAO",
+            "AGUARDANDO_INICIO": "AGUARDANDO_INICIO",
+            "EXECUTADO": "EXECUTADO",
+            "APROVADO": "APROVADO",
+            "PAGO": "PAGO",
+            "FINALIZADO": "FINALIZADO"
+        }
+    }
+}

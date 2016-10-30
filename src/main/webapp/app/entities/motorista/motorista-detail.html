@@ -1,0 +1,31 @@
+
+<div>
+    <h2><span data-translate="opalaApp.motorista.detail.title">Motorista</span> {{vm.motorista.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="opalaApp.motorista.nome">Nome</span></dt>
+        <dd>
+            <span>{{vm.motorista.nome}}</span>
+        </dd>
+        <dt><span data-translate="opalaApp.motorista.habilitacao">Habilitacao</span></dt>
+        <dd>
+            <span>{{vm.motorista.habilitacao}}</span>
+        </dd>
+        <dt><span data-translate="opalaApp.motorista.vencimentoHabilitacao">Vencimento Habilitacao</span></dt>
+        <dd>
+            <span>{{vm.motorista.vencimentoHabilitacao | date:'mediumDate'}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="motorista-detail.edit({id:vm.motorista.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

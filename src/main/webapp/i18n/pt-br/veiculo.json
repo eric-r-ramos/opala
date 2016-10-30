@@ -1,0 +1,27 @@
+{
+    "opalaApp": {
+        "veiculo" : {
+            "home": {
+                "title": "Veiculos",
+                "createLabel": "Criar novo Veiculo",
+                "createOrEditLabel": "Criar ou editar Veiculo",
+                "search": "Pesquisar por Veiculo"
+            },
+            "created": "Um novo Veiculo é criado com o identificador {{ param }}",
+            "updated": "Um Veiculo é atualizado com o identificador {{ param }}",
+            "deleted": "Um Veiculo é deletado com o identificador {{ param }}",
+            "delete": {
+                "question": "Tem certeza de que deseja excluir Veiculo {{ id }}?"
+            },
+            "detail": {
+                "title": "Veiculo"
+            },
+            "marca": "Marca",
+            "modelo": "Modelo",
+            "cor": "Cor",
+            "placa": "Placa",
+            "ano": "Ano",
+            "ativo": "Ativo"
+        }
+    }
+}

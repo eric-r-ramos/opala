@@ -1,0 +1,127 @@
+<div>
+    <h2 data-translate="opalaApp.agendamento.home.title">Agendamentos</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="agendamento.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <span class="hidden-xs"  data-translate="opalaApp.agendamento.home.createLabel">
+                        Create new Agendamento
+                    </span>
+                </button>
+            </div>
+            <div class="col-xs-8 no-padding-right">
+                <form name="searchForm" class="form-inline">
+                    <div class="input-group pull-right" >
+                        <input type="text" class="form-control" ng-model="vm.searchQuery" id="searchQuery" placeholder="{{ 'opalaApp.agendamento.home.search' | translate }}">
+                        <span  class="input-group-btn width-min" >
+                            <button class="btn btn-info" ng-click="vm.search(vm.searchQuery)">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                        <span class="input-group-btn width-min" ng-if="vm.currentSearch">
+                            <button class="btn btn-info" ng-click="vm.clear()">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr>
+                    <th><span data-translate="global.field.id">ID</span></th>
+                    <th><span data-translate="opalaApp.agendamento.data">Data</span></th>
+                    <th><span data-translate="opalaApp.agendamento.numeroRequisicao">Numero Requisicao</span></th>
+                    <th><span data-translate="opalaApp.agendamento.centroCusto">Centro Custo</span></th>
+                    <th><span data-translate="opalaApp.agendamento.referencia">Referencia</span></th>
+                    <th><span data-translate="opalaApp.agendamento.valor">Valor</span></th>
+                    <th><span data-translate="opalaApp.agendamento.observacao">Observacao</span></th>
+                    <th><span data-translate="opalaApp.agendamento.status">Status</span></th>
+                    <th><span data-translate="opalaApp.agendamento.sentido">Sentido</span></th>
+                    <th><span data-translate="opalaApp.agendamento.pagamento">Pagamento</span></th>
+                    <th><span data-translate="opalaApp.agendamento.categoria">Categoria</span></th>
+                    <th><span data-translate="opalaApp.agendamento.cliente">Cliente</span></th>
+                    <th><span data-translate="opalaApp.agendamento.motorista">Motorista</span></th>
+                    <th><span data-translate="opalaApp.agendamento.origem">Origem</span></th>
+                    <th><span data-translate="opalaApp.agendamento.solicitante">Solicitante</span></th>
+                    <th><span data-translate="opalaApp.agendamento.veiculo">Veiculo</span></th>
+                    <th><span data-translate="opalaApp.agendamento.itinerario">Itinerario</span></th>
+                    <th><span data-translate="opalaApp.agendamento.listaPassageiros">Lista Passageiros</span></th>
+                    <th><span data-translate="opalaApp.agendamento.listaDestinos">Lista Destinos</span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="agendamento in vm.agendamentos track by agendamento.id">
+                    <td><a ui-sref="agendamento-detail({id:agendamento.id})">{{agendamento.id}}</a></td>
+                    <td>{{agendamento.data | date:'medium'}}</td>
+                    <td>{{agendamento.numeroRequisicao}}</td>
+                    <td>{{agendamento.centroCusto}}</td>
+                    <td>{{agendamento.referencia}}</td>
+                    <td>{{agendamento.valor}}</td>
+                    <td>{{agendamento.observacao}}</td>
+                    <td data-translate="{{'opalaApp.Status.' + agendamento.status}}">{{agendamento.status}}</td>
+                    <td data-translate="{{'opalaApp.Sentido.' + agendamento.sentido}}">{{agendamento.sentido}}</td>
+                    <td data-translate="{{'opalaApp.Pagamento.' + agendamento.pagamento}}">{{agendamento.pagamento}}</td>
+                    <td data-translate="{{'opalaApp.Categoria.' + agendamento.categoria}}">{{agendamento.categoria}}</td>
+                    <td>
+                        <a ui-sref="cliente-detail({id:agendamento.cliente.id})">{{agendamento.cliente.id}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="motorista-detail({id:agendamento.motorista.id})">{{agendamento.motorista.id}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="endereco-detail({id:agendamento.origem.id})">{{agendamento.origem.id}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="solicitante-detail({id:agendamento.solicitante.id})">{{agendamento.solicitante.id}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="veiculo-detail({id:agendamento.veiculo.id})">{{agendamento.veiculo.id}}</a>
+                    </td>
+                    <td>
+                        <a ui-sref="itinerario-detail({id:agendamento.itinerario.id})">{{agendamento.itinerario.id}}</a>
+                    </td>
+                    <td>
+                        <span ng-repeat="listaPassageiros in agendamento.listaPassageiros">
+                            <a class="form-control-static" ui-sref="passageiro-detail({id: listaPassageiros.id})">{{listaPassageiros.id}}</a>{{$last ? '' : ', '}}
+                        </span>
+                    </td>
+                    <td>
+                        <span ng-repeat="listaDestinos in agendamento.listaDestinos">
+                            <a class="form-control-static" ui-sref="endereco-detail({id: listaDestinos.id})">{{listaDestinos.id}}</a>{{$last ? '' : ', '}}
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="agendamento-detail({id:agendamento.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="agendamento.edit({id:agendamento.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="agendamento.delete({id:agendamento.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+{
+    "opalaApp": {
+        "Sentido" : {
+            "null": "",
+            "LEVAR": "LEVAR",
+            "BUSCAR": "BUSCAR",
+            "ADISPOSICAO_RETORNO_ATE_2H": "ADISPOSICAO_RETORNO_ATE_2H",
+            "ADISPOSICAO_RETORNO_ATE_8H": "ADISPOSICAO_RETORNO_ATE_8H"
+        }
+    }
+}

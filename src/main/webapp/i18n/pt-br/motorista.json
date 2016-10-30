@@ -1,0 +1,24 @@
+{
+    "opalaApp": {
+        "motorista" : {
+            "home": {
+                "title": "Motoristas",
+                "createLabel": "Criar novo Motorista",
+                "createOrEditLabel": "Criar ou editar Motorista",
+                "search": "Pesquisar por Motorista"
+            },
+            "created": "Um novo Motorista é criado com o identificador {{ param }}",
+            "updated": "Um Motorista é atualizado com o identificador {{ param }}",
+            "deleted": "Um Motorista é deletado com o identificador {{ param }}",
+            "delete": {
+                "question": "Tem certeza de que deseja excluir Motorista {{ id }}?"
+            },
+            "detail": {
+                "title": "Motorista"
+            },
+            "nome": "Nome",
+            "habilitacao": "Habilitacao",
+            "vencimentoHabilitacao": "Vencimento Habilitacao"
+        }
+    }
+}

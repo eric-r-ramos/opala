@@ -1,0 +1,108 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "cliente",
+            "otherEntityName": "cliente",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "motorista",
+            "otherEntityName": "motorista",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "origem",
+            "otherEntityName": "endereco",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "solicitante",
+            "otherEntityName": "solicitante",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "veiculo",
+            "otherEntityName": "veiculo",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "itinerario",
+            "otherEntityName": "itinerario",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "",
+            "relationshipName": "listaPassageiros",
+            "otherEntityName": "passageiro",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "",
+            "relationshipName": "listaDestinos",
+            "otherEntityName": "endereco",
+            "otherEntityField": "id",
+            "ownerSide": true
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "data",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "numeroRequisicao",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "centroCusto",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "referencia",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "valor",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "observacao",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "Status",
+            "fieldValues": "AGENDADO,ENVIADO,CANCELADO,ACEITO,EM_EXECUCAO,AGUARDANDO_INICIO,EXECUTADO,APROVADO,PAGO,FINALIZADO"
+        },
+        {
+            "fieldName": "sentido",
+            "fieldType": "Sentido",
+            "fieldValues": "LEVAR,BUSCAR,ADISPOSICAO_RETORNO_ATE_2H,ADISPOSICAO_RETORNO_ATE_8H"
+        },
+        {
+            "fieldName": "pagamento",
+            "fieldType": "Pagamento",
+            "fieldValues": "FATURADO,DIRETO"
+        },
+        {
+            "fieldName": "categoria",
+            "fieldType": "Categoria",
+            "fieldValues": "EXECUTIVO,LUXO"
+        }
+    ],
+    "changelogDate": "20161030192124",
+    "entityTableName": "agendamento",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no"
+}
