@@ -34,14 +34,14 @@
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
-                <tr>
-                    <th><span data-translate="global.field.id">ID</span></th>
-                    <th><span data-translate="opalaApp.veiculo.marca">Marca</span></th>
-                    <th><span data-translate="opalaApp.veiculo.modelo">Modelo</span></th>
-                    <th><span data-translate="opalaApp.veiculo.cor">Cor</span></th>
-                    <th><span data-translate="opalaApp.veiculo.placa">Placa</span></th>
-                    <th><span data-translate="opalaApp.veiculo.ano">Ano</span></th>
-                    <th><span data-translate="opalaApp.veiculo.ativo">Ativo</span></th>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="marca"><span data-translate="opalaApp.veiculo.marca">Marca</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="modelo"><span data-translate="opalaApp.veiculo.modelo">Modelo</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="cor"><span data-translate="opalaApp.veiculo.cor">Cor</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="placa"><span data-translate="opalaApp.veiculo.placa">Placa</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="ano"><span data-translate="opalaApp.veiculo.ano">Ano</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="ativo"><span data-translate="opalaApp.veiculo.ativo">Ativo</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -80,4 +80,8 @@
             </tbody>
         </table>
     </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
 </div>

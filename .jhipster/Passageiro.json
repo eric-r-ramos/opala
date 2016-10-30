@@ -9,7 +9,7 @@
     ],
     "changelogDate": "20161030192127",
     "entityTableName": "passageiro",
-    "dto": "no",
-    "pagination": "no",
-    "service": "no"
+    "dto": "mapstruct",
+    "pagination": "pager",
+    "service": "serviceImpl"
 }

@@ -22,7 +22,7 @@
 
         <div class="form-group">
             <label data-translate="opalaApp.solicitante.cliente" for="field_cliente">Cliente</label>
-            <select class="form-control" id="field_cliente" name="cliente" ng-model="vm.solicitante.cliente" ng-options="cliente as cliente.id for cliente in vm.clientes track by cliente.id">
+            <select class="form-control" id="field_cliente" name="cliente" ng-model="vm.solicitante.clienteId" ng-options="cliente.id as cliente.id for cliente in vm.clientes"            >
                 <option value=""></option>
             </select>
         </div>

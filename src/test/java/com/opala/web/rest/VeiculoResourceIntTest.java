@@ -4,7 +4,10 @@ import com.opala.OpalaApp;
 
 import com.opala.domain.Veiculo;
 import com.opala.repository.VeiculoRepository;
+import com.opala.service.VeiculoService;
 import com.opala.repository.search.VeiculoSearchRepository;
+import com.opala.service.dto.VeiculoDTO;
+import com.opala.service.mapper.VeiculoMapper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -61,6 +64,12 @@ public class VeiculoResourceIntTest {
     private VeiculoRepository veiculoRepository;
 
     @Inject
+    private VeiculoMapper veiculoMapper;
+
+    @Inject
+    private VeiculoService veiculoService;
+
+    @Inject
     private VeiculoSearchRepository veiculoSearchRepository;
 
     @Inject
@@ -80,8 +89,7 @@ public class VeiculoResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         VeiculoResource veiculoResource = new VeiculoResource();
-        ReflectionTestUtils.setField(veiculoResource, "veiculoSearchRepository", veiculoSearchRepository);
-        ReflectionTestUtils.setField(veiculoResource, "veiculoRepository", veiculoRepository);
+        ReflectionTestUtils.setField(veiculoResource, "veiculoService", veiculoService);
         this.restVeiculoMockMvc = MockMvcBuilders.standaloneSetup(veiculoResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -116,10 +124,11 @@ public class VeiculoResourceIntTest {
         int databaseSizeBeforeCreate = veiculoRepository.findAll().size();
 
         // Create the Veiculo
+        VeiculoDTO veiculoDTO = veiculoMapper.veiculoToVeiculoDTO(veiculo);
 
         restVeiculoMockMvc.perform(post("/api/veiculos")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(veiculo)))
+                .content(TestUtil.convertObjectToJsonBytes(veiculoDTO)))
                 .andExpect(status().isCreated());
 
         // Validate the Veiculo in the database
@@ -201,10 +210,11 @@ public class VeiculoResourceIntTest {
                 .placa(UPDATED_PLACA)
                 .ano(UPDATED_ANO)
                 .ativo(UPDATED_ATIVO);
+        VeiculoDTO veiculoDTO = veiculoMapper.veiculoToVeiculoDTO(updatedVeiculo);
 
         restVeiculoMockMvc.perform(put("/api/veiculos")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(updatedVeiculo)))
+                .content(TestUtil.convertObjectToJsonBytes(veiculoDTO)))
                 .andExpect(status().isOk());
 
         // Validate the Veiculo in the database

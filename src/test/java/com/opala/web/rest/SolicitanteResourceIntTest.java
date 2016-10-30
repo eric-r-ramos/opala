@@ -4,7 +4,10 @@ import com.opala.OpalaApp;
 
 import com.opala.domain.Solicitante;
 import com.opala.repository.SolicitanteRepository;
+import com.opala.service.SolicitanteService;
 import com.opala.repository.search.SolicitanteSearchRepository;
+import com.opala.service.dto.SolicitanteDTO;
+import com.opala.service.mapper.SolicitanteMapper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +49,12 @@ public class SolicitanteResourceIntTest {
     private SolicitanteRepository solicitanteRepository;
 
     @Inject
+    private SolicitanteMapper solicitanteMapper;
+
+    @Inject
+    private SolicitanteService solicitanteService;
+
+    @Inject
     private SolicitanteSearchRepository solicitanteSearchRepository;
 
     @Inject
@@ -65,8 +74,7 @@ public class SolicitanteResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         SolicitanteResource solicitanteResource = new SolicitanteResource();
-        ReflectionTestUtils.setField(solicitanteResource, "solicitanteSearchRepository", solicitanteSearchRepository);
-        ReflectionTestUtils.setField(solicitanteResource, "solicitanteRepository", solicitanteRepository);
+        ReflectionTestUtils.setField(solicitanteResource, "solicitanteService", solicitanteService);
         this.restSolicitanteMockMvc = MockMvcBuilders.standaloneSetup(solicitanteResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -96,10 +104,11 @@ public class SolicitanteResourceIntTest {
         int databaseSizeBeforeCreate = solicitanteRepository.findAll().size();
 
         // Create the Solicitante
+        SolicitanteDTO solicitanteDTO = solicitanteMapper.solicitanteToSolicitanteDTO(solicitante);
 
         restSolicitanteMockMvc.perform(post("/api/solicitantes")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(solicitante)))
+                .content(TestUtil.convertObjectToJsonBytes(solicitanteDTO)))
                 .andExpect(status().isCreated());
 
         // Validate the Solicitante in the database
@@ -161,10 +170,11 @@ public class SolicitanteResourceIntTest {
         Solicitante updatedSolicitante = solicitanteRepository.findOne(solicitante.getId());
         updatedSolicitante
                 .nome(UPDATED_NOME);
+        SolicitanteDTO solicitanteDTO = solicitanteMapper.solicitanteToSolicitanteDTO(updatedSolicitante);
 
         restSolicitanteMockMvc.perform(put("/api/solicitantes")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(updatedSolicitante)))
+                .content(TestUtil.convertObjectToJsonBytes(solicitanteDTO)))
                 .andExpect(status().isOk());
 
         // Validate the Solicitante in the database

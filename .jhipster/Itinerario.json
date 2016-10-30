@@ -9,7 +9,7 @@
     ],
     "changelogDate": "20161030192130",
     "entityTableName": "itinerario",
-    "dto": "no",
-    "pagination": "no",
-    "service": "no"
+    "dto": "mapstruct",
+    "pagination": "pager",
+    "service": "serviceImpl"
 }

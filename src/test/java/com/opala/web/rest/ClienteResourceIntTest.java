@@ -4,7 +4,10 @@ import com.opala.OpalaApp;
 
 import com.opala.domain.Cliente;
 import com.opala.repository.ClienteRepository;
+import com.opala.service.ClienteService;
 import com.opala.repository.search.ClienteSearchRepository;
+import com.opala.service.dto.ClienteDTO;
+import com.opala.service.mapper.ClienteMapper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +49,12 @@ public class ClienteResourceIntTest {
     private ClienteRepository clienteRepository;
 
     @Inject
+    private ClienteMapper clienteMapper;
+
+    @Inject
+    private ClienteService clienteService;
+
+    @Inject
     private ClienteSearchRepository clienteSearchRepository;
 
     @Inject
@@ -65,8 +74,7 @@ public class ClienteResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         ClienteResource clienteResource = new ClienteResource();
-        ReflectionTestUtils.setField(clienteResource, "clienteSearchRepository", clienteSearchRepository);
-        ReflectionTestUtils.setField(clienteResource, "clienteRepository", clienteRepository);
+        ReflectionTestUtils.setField(clienteResource, "clienteService", clienteService);
         this.restClienteMockMvc = MockMvcBuilders.standaloneSetup(clienteResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -96,10 +104,11 @@ public class ClienteResourceIntTest {
         int databaseSizeBeforeCreate = clienteRepository.findAll().size();
 
         // Create the Cliente
+        ClienteDTO clienteDTO = clienteMapper.clienteToClienteDTO(cliente);
 
         restClienteMockMvc.perform(post("/api/clientes")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(cliente)))
+                .content(TestUtil.convertObjectToJsonBytes(clienteDTO)))
                 .andExpect(status().isCreated());
 
         // Validate the Cliente in the database
@@ -161,10 +170,11 @@ public class ClienteResourceIntTest {
         Cliente updatedCliente = clienteRepository.findOne(cliente.getId());
         updatedCliente
                 .nome(UPDATED_NOME);
+        ClienteDTO clienteDTO = clienteMapper.clienteToClienteDTO(updatedCliente);
 
         restClienteMockMvc.perform(put("/api/clientes")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(updatedCliente)))
+                .content(TestUtil.convertObjectToJsonBytes(clienteDTO)))
                 .andExpect(status().isOk());
 
         // Validate the Cliente in the database

@@ -4,7 +4,10 @@ import com.opala.OpalaApp;
 
 import com.opala.domain.Endereco;
 import com.opala.repository.EnderecoRepository;
+import com.opala.service.EnderecoService;
 import com.opala.repository.search.EnderecoSearchRepository;
+import com.opala.service.dto.EnderecoDTO;
+import com.opala.service.mapper.EnderecoMapper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +61,12 @@ public class EnderecoResourceIntTest {
     private EnderecoRepository enderecoRepository;
 
     @Inject
+    private EnderecoMapper enderecoMapper;
+
+    @Inject
+    private EnderecoService enderecoService;
+
+    @Inject
     private EnderecoSearchRepository enderecoSearchRepository;
 
     @Inject
@@ -77,8 +86,7 @@ public class EnderecoResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         EnderecoResource enderecoResource = new EnderecoResource();
-        ReflectionTestUtils.setField(enderecoResource, "enderecoSearchRepository", enderecoSearchRepository);
-        ReflectionTestUtils.setField(enderecoResource, "enderecoRepository", enderecoRepository);
+        ReflectionTestUtils.setField(enderecoResource, "enderecoService", enderecoService);
         this.restEnderecoMockMvc = MockMvcBuilders.standaloneSetup(enderecoResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -112,10 +120,11 @@ public class EnderecoResourceIntTest {
         int databaseSizeBeforeCreate = enderecoRepository.findAll().size();
 
         // Create the Endereco
+        EnderecoDTO enderecoDTO = enderecoMapper.enderecoToEnderecoDTO(endereco);
 
         restEnderecoMockMvc.perform(post("/api/enderecos")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(endereco)))
+                .content(TestUtil.convertObjectToJsonBytes(enderecoDTO)))
                 .andExpect(status().isCreated());
 
         // Validate the Endereco in the database
@@ -193,10 +202,11 @@ public class EnderecoResourceIntTest {
                 .cidade(UPDATED_CIDADE)
                 .estado(UPDATED_ESTADO)
                 .cep(UPDATED_CEP);
+        EnderecoDTO enderecoDTO = enderecoMapper.enderecoToEnderecoDTO(updatedEndereco);
 
         restEnderecoMockMvc.perform(put("/api/enderecos")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(updatedEndereco)))
+                .content(TestUtil.convertObjectToJsonBytes(enderecoDTO)))
                 .andExpect(status().isOk());
 
         // Validate the Endereco in the database

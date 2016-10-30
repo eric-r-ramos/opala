@@ -22,7 +22,7 @@
     ],
     "changelogDate": "20161030192129",
     "entityTableName": "solicitante",
-    "dto": "no",
-    "pagination": "no",
-    "service": "no"
+    "dto": "mapstruct",
+    "pagination": "pager",
+    "service": "serviceImpl"
 }

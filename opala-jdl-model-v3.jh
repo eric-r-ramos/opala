@@ -6,7 +6,6 @@ entity Agendamento {
     centroCusto String,
     referencia String,
     valor Long,
-    itinerario String,
     observacao String,
     status Status,
     sentido Sentido,
@@ -109,3 +108,7 @@ relationship ManyToOne{
 relationship ManyToOne{
 	Agendamento{itinerario} to Itinerario
 }
+
+dto all with mapstruct
+service all with serviceImpl
+paginate all with pager

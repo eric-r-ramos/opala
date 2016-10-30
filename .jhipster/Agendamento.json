@@ -102,7 +102,7 @@
     ],
     "changelogDate": "20161030192124",
     "entityTableName": "agendamento",
-    "dto": "no",
-    "pagination": "no",
-    "service": "no"
+    "dto": "mapstruct",
+    "pagination": "pager",
+    "service": "serviceImpl"
 }

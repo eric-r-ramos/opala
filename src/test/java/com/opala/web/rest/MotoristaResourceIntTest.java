@@ -4,7 +4,10 @@ import com.opala.OpalaApp;
 
 import com.opala.domain.Motorista;
 import com.opala.repository.MotoristaRepository;
+import com.opala.service.MotoristaService;
 import com.opala.repository.search.MotoristaSearchRepository;
+import com.opala.service.dto.MotoristaDTO;
+import com.opala.service.mapper.MotoristaMapper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -54,6 +57,12 @@ public class MotoristaResourceIntTest {
     private MotoristaRepository motoristaRepository;
 
     @Inject
+    private MotoristaMapper motoristaMapper;
+
+    @Inject
+    private MotoristaService motoristaService;
+
+    @Inject
     private MotoristaSearchRepository motoristaSearchRepository;
 
     @Inject
@@ -73,8 +82,7 @@ public class MotoristaResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         MotoristaResource motoristaResource = new MotoristaResource();
-        ReflectionTestUtils.setField(motoristaResource, "motoristaSearchRepository", motoristaSearchRepository);
-        ReflectionTestUtils.setField(motoristaResource, "motoristaRepository", motoristaRepository);
+        ReflectionTestUtils.setField(motoristaResource, "motoristaService", motoristaService);
         this.restMotoristaMockMvc = MockMvcBuilders.standaloneSetup(motoristaResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -106,10 +114,11 @@ public class MotoristaResourceIntTest {
         int databaseSizeBeforeCreate = motoristaRepository.findAll().size();
 
         // Create the Motorista
+        MotoristaDTO motoristaDTO = motoristaMapper.motoristaToMotoristaDTO(motorista);
 
         restMotoristaMockMvc.perform(post("/api/motoristas")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(motorista)))
+                .content(TestUtil.convertObjectToJsonBytes(motoristaDTO)))
                 .andExpect(status().isCreated());
 
         // Validate the Motorista in the database
@@ -179,10 +188,11 @@ public class MotoristaResourceIntTest {
                 .nome(UPDATED_NOME)
                 .habilitacao(UPDATED_HABILITACAO)
                 .vencimentoHabilitacao(UPDATED_VENCIMENTO_HABILITACAO);
+        MotoristaDTO motoristaDTO = motoristaMapper.motoristaToMotoristaDTO(updatedMotorista);
 
         restMotoristaMockMvc.perform(put("/api/motoristas")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(updatedMotorista)))
+                .content(TestUtil.convertObjectToJsonBytes(motoristaDTO)))
                 .andExpect(status().isOk());
 
         // Validate the Motorista in the database

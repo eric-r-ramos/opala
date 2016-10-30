@@ -34,13 +34,13 @@
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
-                <tr>
-                    <th><span data-translate="global.field.id">ID</span></th>
-                    <th><span data-translate="opalaApp.endereco.linha1">Linha 1</span></th>
-                    <th><span data-translate="opalaApp.endereco.linha2">Linha 2</span></th>
-                    <th><span data-translate="opalaApp.endereco.cidade">Cidade</span></th>
-                    <th><span data-translate="opalaApp.endereco.estado">Estado</span></th>
-                    <th><span data-translate="opalaApp.endereco.cep">Cep</span></th>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="linha1"><span data-translate="opalaApp.endereco.linha1">Linha 1</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="linha2"><span data-translate="opalaApp.endereco.linha2">Linha 2</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="cidade"><span data-translate="opalaApp.endereco.cidade">Cidade</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="estado"><span data-translate="opalaApp.endereco.estado">Estado</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="cep"><span data-translate="opalaApp.endereco.cep">Cep</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -78,4 +78,8 @@
             </tbody>
         </table>
     </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
 </div>

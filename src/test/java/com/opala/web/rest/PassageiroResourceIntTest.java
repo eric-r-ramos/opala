@@ -4,7 +4,10 @@ import com.opala.OpalaApp;
 
 import com.opala.domain.Passageiro;
 import com.opala.repository.PassageiroRepository;
+import com.opala.service.PassageiroService;
 import com.opala.repository.search.PassageiroSearchRepository;
+import com.opala.service.dto.PassageiroDTO;
+import com.opala.service.mapper.PassageiroMapper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +49,12 @@ public class PassageiroResourceIntTest {
     private PassageiroRepository passageiroRepository;
 
     @Inject
+    private PassageiroMapper passageiroMapper;
+
+    @Inject
+    private PassageiroService passageiroService;
+
+    @Inject
     private PassageiroSearchRepository passageiroSearchRepository;
 
     @Inject
@@ -65,8 +74,7 @@ public class PassageiroResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         PassageiroResource passageiroResource = new PassageiroResource();
-        ReflectionTestUtils.setField(passageiroResource, "passageiroSearchRepository", passageiroSearchRepository);
-        ReflectionTestUtils.setField(passageiroResource, "passageiroRepository", passageiroRepository);
+        ReflectionTestUtils.setField(passageiroResource, "passageiroService", passageiroService);
         this.restPassageiroMockMvc = MockMvcBuilders.standaloneSetup(passageiroResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -96,10 +104,11 @@ public class PassageiroResourceIntTest {
         int databaseSizeBeforeCreate = passageiroRepository.findAll().size();
 
         // Create the Passageiro
+        PassageiroDTO passageiroDTO = passageiroMapper.passageiroToPassageiroDTO(passageiro);
 
         restPassageiroMockMvc.perform(post("/api/passageiros")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(passageiro)))
+                .content(TestUtil.convertObjectToJsonBytes(passageiroDTO)))
                 .andExpect(status().isCreated());
 
         // Validate the Passageiro in the database
@@ -161,10 +170,11 @@ public class PassageiroResourceIntTest {
         Passageiro updatedPassageiro = passageiroRepository.findOne(passageiro.getId());
         updatedPassageiro
                 .nome(UPDATED_NOME);
+        PassageiroDTO passageiroDTO = passageiroMapper.passageiroToPassageiroDTO(updatedPassageiro);
 
         restPassageiroMockMvc.perform(put("/api/passageiros")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(updatedPassageiro)))
+                .content(TestUtil.convertObjectToJsonBytes(passageiroDTO)))
                 .andExpect(status().isOk());
 
         // Validate the Passageiro in the database

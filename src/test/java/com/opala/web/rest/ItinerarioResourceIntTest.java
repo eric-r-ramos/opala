@@ -4,7 +4,10 @@ import com.opala.OpalaApp;
 
 import com.opala.domain.Itinerario;
 import com.opala.repository.ItinerarioRepository;
+import com.opala.service.ItinerarioService;
 import com.opala.repository.search.ItinerarioSearchRepository;
+import com.opala.service.dto.ItinerarioDTO;
+import com.opala.service.mapper.ItinerarioMapper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +49,12 @@ public class ItinerarioResourceIntTest {
     private ItinerarioRepository itinerarioRepository;
 
     @Inject
+    private ItinerarioMapper itinerarioMapper;
+
+    @Inject
+    private ItinerarioService itinerarioService;
+
+    @Inject
     private ItinerarioSearchRepository itinerarioSearchRepository;
 
     @Inject
@@ -65,8 +74,7 @@ public class ItinerarioResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         ItinerarioResource itinerarioResource = new ItinerarioResource();
-        ReflectionTestUtils.setField(itinerarioResource, "itinerarioSearchRepository", itinerarioSearchRepository);
-        ReflectionTestUtils.setField(itinerarioResource, "itinerarioRepository", itinerarioRepository);
+        ReflectionTestUtils.setField(itinerarioResource, "itinerarioService", itinerarioService);
         this.restItinerarioMockMvc = MockMvcBuilders.standaloneSetup(itinerarioResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -96,10 +104,11 @@ public class ItinerarioResourceIntTest {
         int databaseSizeBeforeCreate = itinerarioRepository.findAll().size();
 
         // Create the Itinerario
+        ItinerarioDTO itinerarioDTO = itinerarioMapper.itinerarioToItinerarioDTO(itinerario);
 
         restItinerarioMockMvc.perform(post("/api/itinerarios")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(itinerario)))
+                .content(TestUtil.convertObjectToJsonBytes(itinerarioDTO)))
                 .andExpect(status().isCreated());
 
         // Validate the Itinerario in the database
@@ -161,10 +170,11 @@ public class ItinerarioResourceIntTest {
         Itinerario updatedItinerario = itinerarioRepository.findOne(itinerario.getId());
         updatedItinerario
                 .descricao(UPDATED_DESCRICAO);
+        ItinerarioDTO itinerarioDTO = itinerarioMapper.itinerarioToItinerarioDTO(updatedItinerario);
 
         restItinerarioMockMvc.perform(put("/api/itinerarios")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(updatedItinerario)))
+                .content(TestUtil.convertObjectToJsonBytes(itinerarioDTO)))
                 .andExpect(status().isOk());
 
         // Validate the Itinerario in the database

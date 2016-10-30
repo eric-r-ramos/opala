@@ -34,10 +34,10 @@
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
-                <tr>
-                    <th><span data-translate="global.field.id">ID</span></th>
-                    <th><span data-translate="opalaApp.solicitante.nome">Nome</span></th>
-                    <th><span data-translate="opalaApp.solicitante.cliente">Cliente</span></th>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="nome"><span data-translate="opalaApp.solicitante.nome">Nome</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="clienteId"><span data-translate="opalaApp.solicitante.cliente">Cliente</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
@@ -46,7 +46,7 @@
                     <td><a ui-sref="solicitante-detail({id:solicitante.id})">{{solicitante.id}}</a></td>
                     <td>{{solicitante.nome}}</td>
                     <td>
-                        <a ui-sref="cliente-detail({id:solicitante.cliente.id})">{{solicitante.cliente.id}}</a>
+                        <a ui-sref="cliente-detail({id:solicitante.clienteId})">{{solicitante.clienteId}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
@@ -74,4 +74,8 @@
             </tbody>
         </table>
     </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
 </div>

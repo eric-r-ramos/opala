@@ -4,7 +4,10 @@ import com.opala.OpalaApp;
 
 import com.opala.domain.Agendamento;
 import com.opala.repository.AgendamentoRepository;
+import com.opala.service.AgendamentoService;
 import com.opala.repository.search.AgendamentoSearchRepository;
+import com.opala.service.dto.AgendamentoDTO;
+import com.opala.service.mapper.AgendamentoMapper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -82,6 +85,12 @@ public class AgendamentoResourceIntTest {
     private AgendamentoRepository agendamentoRepository;
 
     @Inject
+    private AgendamentoMapper agendamentoMapper;
+
+    @Inject
+    private AgendamentoService agendamentoService;
+
+    @Inject
     private AgendamentoSearchRepository agendamentoSearchRepository;
 
     @Inject
@@ -101,8 +110,7 @@ public class AgendamentoResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         AgendamentoResource agendamentoResource = new AgendamentoResource();
-        ReflectionTestUtils.setField(agendamentoResource, "agendamentoSearchRepository", agendamentoSearchRepository);
-        ReflectionTestUtils.setField(agendamentoResource, "agendamentoRepository", agendamentoRepository);
+        ReflectionTestUtils.setField(agendamentoResource, "agendamentoService", agendamentoService);
         this.restAgendamentoMockMvc = MockMvcBuilders.standaloneSetup(agendamentoResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -141,10 +149,11 @@ public class AgendamentoResourceIntTest {
         int databaseSizeBeforeCreate = agendamentoRepository.findAll().size();
 
         // Create the Agendamento
+        AgendamentoDTO agendamentoDTO = agendamentoMapper.agendamentoToAgendamentoDTO(agendamento);
 
         restAgendamentoMockMvc.perform(post("/api/agendamentos")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(agendamento)))
+                .content(TestUtil.convertObjectToJsonBytes(agendamentoDTO)))
                 .andExpect(status().isCreated());
 
         // Validate the Agendamento in the database
@@ -242,10 +251,11 @@ public class AgendamentoResourceIntTest {
                 .sentido(UPDATED_SENTIDO)
                 .pagamento(UPDATED_PAGAMENTO)
                 .categoria(UPDATED_CATEGORIA);
+        AgendamentoDTO agendamentoDTO = agendamentoMapper.agendamentoToAgendamentoDTO(updatedAgendamento);
 
         restAgendamentoMockMvc.perform(put("/api/agendamentos")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(updatedAgendamento)))
+                .content(TestUtil.convertObjectToJsonBytes(agendamentoDTO)))
                 .andExpect(status().isOk());
 
         // Validate the Agendamento in the database

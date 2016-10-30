@@ -94,37 +94,37 @@
 
         <div class="form-group">
             <label data-translate="opalaApp.agendamento.cliente" for="field_cliente">Cliente</label>
-            <select class="form-control" id="field_cliente" name="cliente" ng-model="vm.agendamento.cliente" ng-options="cliente as cliente.id for cliente in vm.clientes track by cliente.id">
+            <select class="form-control" id="field_cliente" name="cliente" ng-model="vm.agendamento.clienteId" ng-options="cliente.id as cliente.id for cliente in vm.clientes"            >
                 <option value=""></option>
             </select>
         </div>
         <div class="form-group">
             <label data-translate="opalaApp.agendamento.motorista" for="field_motorista">Motorista</label>
-            <select class="form-control" id="field_motorista" name="motorista" ng-model="vm.agendamento.motorista" ng-options="motorista as motorista.id for motorista in vm.motoristas track by motorista.id">
+            <select class="form-control" id="field_motorista" name="motorista" ng-model="vm.agendamento.motoristaId" ng-options="motorista.id as motorista.id for motorista in vm.motoristas"            >
                 <option value=""></option>
             </select>
         </div>
         <div class="form-group">
             <label data-translate="opalaApp.agendamento.origem" for="field_origem">Origem</label>
-            <select class="form-control" id="field_origem" name="origem" ng-model="vm.agendamento.origem" ng-options="endereco as endereco.id for endereco in vm.enderecos track by endereco.id">
+            <select class="form-control" id="field_origem" name="origem" ng-model="vm.agendamento.origemId" ng-options="endereco.id as endereco.id for endereco in vm.enderecos"            >
                 <option value=""></option>
             </select>
         </div>
         <div class="form-group">
             <label data-translate="opalaApp.agendamento.solicitante" for="field_solicitante">Solicitante</label>
-            <select class="form-control" id="field_solicitante" name="solicitante" ng-model="vm.agendamento.solicitante" ng-options="solicitante as solicitante.id for solicitante in vm.solicitantes track by solicitante.id">
+            <select class="form-control" id="field_solicitante" name="solicitante" ng-model="vm.agendamento.solicitanteId" ng-options="solicitante.id as solicitante.id for solicitante in vm.solicitantes"            >
                 <option value=""></option>
             </select>
         </div>
         <div class="form-group">
             <label data-translate="opalaApp.agendamento.veiculo" for="field_veiculo">Veiculo</label>
-            <select class="form-control" id="field_veiculo" name="veiculo" ng-model="vm.agendamento.veiculo" ng-options="veiculo as veiculo.id for veiculo in vm.veiculos track by veiculo.id">
+            <select class="form-control" id="field_veiculo" name="veiculo" ng-model="vm.agendamento.veiculoId" ng-options="veiculo.id as veiculo.id for veiculo in vm.veiculos"            >
                 <option value=""></option>
             </select>
         </div>
         <div class="form-group">
             <label data-translate="opalaApp.agendamento.itinerario" for="field_itinerario">Itinerario</label>
-            <select class="form-control" id="field_itinerario" name="itinerario" ng-model="vm.agendamento.itinerario" ng-options="itinerario as itinerario.id for itinerario in vm.itinerarios track by itinerario.id">
+            <select class="form-control" id="field_itinerario" name="itinerario" ng-model="vm.agendamento.itinerarioId" ng-options="itinerario.id as itinerario.id for itinerario in vm.itinerarios"            >
                 <option value=""></option>
             </select>
         </div>

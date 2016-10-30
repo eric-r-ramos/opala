@@ -25,7 +25,7 @@
     ],
     "changelogDate": "20161030192131",
     "entityTableName": "endereco",
-    "dto": "no",
-    "pagination": "no",
-    "service": "no"
+    "dto": "mapstruct",
+    "pagination": "pager",
+    "service": "serviceImpl"
 }
