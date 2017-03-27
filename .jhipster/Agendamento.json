@@ -27,12 +27,6 @@
         },
         {
             "relationshipType": "many-to-one",
-            "relationshipName": "veiculo",
-            "otherEntityName": "veiculo",
-            "otherEntityField": "id"
-        },
-        {
-            "relationshipType": "many-to-one",
             "relationshipName": "itinerario",
             "otherEntityName": "itinerario",
             "otherEntityField": "id"
@@ -102,7 +96,7 @@
     ],
     "changelogDate": "20161030192124",
     "entityTableName": "agendamento",
-    "dto": "mapstruct",
-    "pagination": "pager",
-    "service": "serviceImpl"
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "no"
 }

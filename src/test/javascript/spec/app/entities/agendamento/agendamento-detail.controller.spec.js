@@ -4,7 +4,7 @@ describe('Controller Tests', function() {
 
     describe('Agendamento Management Detail Controller', function() {
         var $scope, $rootScope;
-        var MockEntity, MockPreviousState, MockAgendamento, MockCliente, MockMotorista, MockEndereco, MockSolicitante, MockVeiculo, MockItinerario, MockPassageiro;
+        var MockEntity, MockPreviousState, MockAgendamento, MockCliente, MockMotorista, MockEndereco, MockSolicitante, MockItinerario, MockPassageiro;
         var createController;
 
         beforeEach(inject(function($injector) {
@@ -17,7 +17,6 @@ describe('Controller Tests', function() {
             MockMotorista = jasmine.createSpy('MockMotorista');
             MockEndereco = jasmine.createSpy('MockEndereco');
             MockSolicitante = jasmine.createSpy('MockSolicitante');
-            MockVeiculo = jasmine.createSpy('MockVeiculo');
             MockItinerario = jasmine.createSpy('MockItinerario');
             MockPassageiro = jasmine.createSpy('MockPassageiro');
             
@@ -32,7 +31,6 @@ describe('Controller Tests', function() {
                 'Motorista': MockMotorista,
                 'Endereco': MockEndereco,
                 'Solicitante': MockSolicitante,
-                'Veiculo': MockVeiculo,
                 'Itinerario': MockItinerario,
                 'Passageiro': MockPassageiro
             };

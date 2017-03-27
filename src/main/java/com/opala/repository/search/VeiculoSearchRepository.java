@@ -4,7 +4,7 @@ import com.opala.domain.Veiculo;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
- * Spring Data ElasticSearch repository for the Veiculo entity.
+ * Spring Data Elasticsearch repository for the Veiculo entity.
  */
 public interface VeiculoSearchRepository extends ElasticsearchRepository<Veiculo, Long> {
 }

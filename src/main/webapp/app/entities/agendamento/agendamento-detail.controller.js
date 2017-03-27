@@ -5,9 +5,9 @@
         .module('opalaApp')
         .controller('AgendamentoDetailController', AgendamentoDetailController);
 
-    AgendamentoDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Agendamento', 'Cliente', 'Motorista', 'Endereco', 'Solicitante', 'Veiculo', 'Itinerario', 'Passageiro'];
+    AgendamentoDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Agendamento', 'Cliente', 'Motorista', 'Endereco', 'Solicitante', 'Itinerario', 'Passageiro'];
 
-    function AgendamentoDetailController($scope, $rootScope, $stateParams, previousState, entity, Agendamento, Cliente, Motorista, Endereco, Solicitante, Veiculo, Itinerario, Passageiro) {
+    function AgendamentoDetailController($scope, $rootScope, $stateParams, previousState, entity, Agendamento, Cliente, Motorista, Endereco, Solicitante, Itinerario, Passageiro) {
         var vm = this;
 
         vm.agendamento = entity;

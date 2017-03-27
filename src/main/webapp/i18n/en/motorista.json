@@ -18,7 +18,8 @@
             },
             "nome": "Nome",
             "habilitacao": "Habilitacao",
-            "vencimentoHabilitacao": "Vencimento Habilitacao"
+            "vencimentoHabilitacao": "Vencimento Habilitacao",
+            "login": "Login"
         }
     }
 }

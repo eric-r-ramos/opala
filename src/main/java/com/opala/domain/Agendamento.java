@@ -31,7 +31,7 @@ public class Agendamento implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "data")
@@ -81,23 +81,20 @@ public class Agendamento implements Serializable {
     private Solicitante solicitante;
 
     @ManyToOne
-    private Veiculo veiculo;
-
-    @ManyToOne
     private Itinerario itinerario;
 
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "agendamento_lista_passageiros",
-               joinColumns = @JoinColumn(name="agendamentos_id", referencedColumnName="ID"),
-               inverseJoinColumns = @JoinColumn(name="lista_passageiros_id", referencedColumnName="ID"))
+               joinColumns = @JoinColumn(name="agendamentos_id", referencedColumnName="id"),
+               inverseJoinColumns = @JoinColumn(name="lista_passageiros_id", referencedColumnName="id"))
     private Set<Passageiro> listaPassageiros = new HashSet<>();
 
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "agendamento_lista_destinos",
-               joinColumns = @JoinColumn(name="agendamentos_id", referencedColumnName="ID"),
-               inverseJoinColumns = @JoinColumn(name="lista_destinos_id", referencedColumnName="ID"))
+               joinColumns = @JoinColumn(name="agendamentos_id", referencedColumnName="id"),
+               inverseJoinColumns = @JoinColumn(name="lista_destinos_id", referencedColumnName="id"))
     private Set<Endereco> listaDestinos = new HashSet<>();
 
     public Long getId() {
@@ -290,19 +287,6 @@ public class Agendamento implements Serializable {
         this.solicitante = solicitante;
     }
 
-    public Veiculo getVeiculo() {
-        return veiculo;
-    }
-
-    public Agendamento veiculo(Veiculo veiculo) {
-        this.veiculo = veiculo;
-        return this;
-    }
-
-    public void setVeiculo(Veiculo veiculo) {
-        this.veiculo = veiculo;
-    }
-
     public Itinerario getItinerario() {
         return itinerario;
     }
@@ -326,12 +310,12 @@ public class Agendamento implements Serializable {
     }
 
     public Agendamento addListaPassageiros(Passageiro passageiro) {
-        listaPassageiros.add(passageiro);
+        this.listaPassageiros.add(passageiro);
         return this;
     }
 
     public Agendamento removeListaPassageiros(Passageiro passageiro) {
-        listaPassageiros.remove(passageiro);
+        this.listaPassageiros.remove(passageiro);
         return this;
     }
 
@@ -349,12 +333,12 @@ public class Agendamento implements Serializable {
     }
 
     public Agendamento addListaDestinos(Endereco endereco) {
-        listaDestinos.add(endereco);
+        this.listaDestinos.add(endereco);
         return this;
     }
 
     public Agendamento removeListaDestinos(Endereco endereco) {
-        listaDestinos.remove(endereco);
+        this.listaDestinos.remove(endereco);
         return this;
     }
 
@@ -371,7 +355,7 @@ public class Agendamento implements Serializable {
             return false;
         }
         Agendamento agendamento = (Agendamento) o;
-        if(agendamento.id == null || id == null) {
+        if (agendamento.id == null || id == null) {
             return false;
         }
         return Objects.equals(id, agendamento.id);

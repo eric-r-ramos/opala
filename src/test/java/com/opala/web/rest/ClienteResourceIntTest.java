@@ -4,32 +4,28 @@ import com.opala.OpalaApp;
 
 import com.opala.domain.Cliente;
 import com.opala.repository.ClienteRepository;
-import com.opala.service.ClienteService;
 import com.opala.repository.search.ClienteSearchRepository;
-import com.opala.service.dto.ClienteDTO;
-import com.opala.service.mapper.ClienteMapper;
+import com.opala.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.hamcrest.Matchers.hasItem;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -42,41 +38,38 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = OpalaApp.class)
 public class ClienteResourceIntTest {
 
-    private static final String DEFAULT_NOME = "AAAAA";
-    private static final String UPDATED_NOME = "BBBBB";
+    private static final String DEFAULT_NOME = "AAAAAAAAAA";
+    private static final String UPDATED_NOME = "BBBBBBBBBB";
 
-    @Inject
+    @Autowired
     private ClienteRepository clienteRepository;
 
-    @Inject
-    private ClienteMapper clienteMapper;
-
-    @Inject
-    private ClienteService clienteService;
-
-    @Inject
+    @Autowired
     private ClienteSearchRepository clienteSearchRepository;
 
-    @Inject
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-    @Inject
+    @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
-    @Inject
+    @Autowired
+    private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
     private EntityManager em;
 
     private MockMvc restClienteMockMvc;
 
     private Cliente cliente;
 
-    @PostConstruct
+    @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ClienteResource clienteResource = new ClienteResource();
-        ReflectionTestUtils.setField(clienteResource, "clienteService", clienteService);
+        ClienteResource clienteResource = new ClienteResource(clienteRepository, clienteSearchRepository);
         this.restClienteMockMvc = MockMvcBuilders.standaloneSetup(clienteResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -88,7 +81,7 @@ public class ClienteResourceIntTest {
      */
     public static Cliente createEntity(EntityManager em) {
         Cliente cliente = new Cliente()
-                .nome(DEFAULT_NOME);
+            .nome(DEFAULT_NOME);
         return cliente;
     }
 
@@ -104,22 +97,39 @@ public class ClienteResourceIntTest {
         int databaseSizeBeforeCreate = clienteRepository.findAll().size();
 
         // Create the Cliente
-        ClienteDTO clienteDTO = clienteMapper.clienteToClienteDTO(cliente);
-
         restClienteMockMvc.perform(post("/api/clientes")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(clienteDTO)))
-                .andExpect(status().isCreated());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(cliente)))
+            .andExpect(status().isCreated());
 
         // Validate the Cliente in the database
-        List<Cliente> clientes = clienteRepository.findAll();
-        assertThat(clientes).hasSize(databaseSizeBeforeCreate + 1);
-        Cliente testCliente = clientes.get(clientes.size() - 1);
+        List<Cliente> clienteList = clienteRepository.findAll();
+        assertThat(clienteList).hasSize(databaseSizeBeforeCreate + 1);
+        Cliente testCliente = clienteList.get(clienteList.size() - 1);
         assertThat(testCliente.getNome()).isEqualTo(DEFAULT_NOME);
 
-        // Validate the Cliente in ElasticSearch
+        // Validate the Cliente in Elasticsearch
         Cliente clienteEs = clienteSearchRepository.findOne(testCliente.getId());
         assertThat(clienteEs).isEqualToComparingFieldByField(testCliente);
+    }
+
+    @Test
+    @Transactional
+    public void createClienteWithExistingId() throws Exception {
+        int databaseSizeBeforeCreate = clienteRepository.findAll().size();
+
+        // Create the Cliente with an existing ID
+        cliente.setId(1L);
+
+        // An entity with an existing ID cannot be created, so this API call must fail
+        restClienteMockMvc.perform(post("/api/clientes")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(cliente)))
+            .andExpect(status().isBadRequest());
+
+        // Validate the Alice in the database
+        List<Cliente> clienteList = clienteRepository.findAll();
+        assertThat(clienteList).hasSize(databaseSizeBeforeCreate);
     }
 
     @Test
@@ -128,12 +138,12 @@ public class ClienteResourceIntTest {
         // Initialize the database
         clienteRepository.saveAndFlush(cliente);
 
-        // Get all the clientes
+        // Get all the clienteList
         restClienteMockMvc.perform(get("/api/clientes?sort=id,desc"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.[*].id").value(hasItem(cliente.getId().intValue())))
-                .andExpect(jsonPath("$.[*].nome").value(hasItem(DEFAULT_NOME.toString())));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(cliente.getId().intValue())))
+            .andExpect(jsonPath("$.[*].nome").value(hasItem(DEFAULT_NOME.toString())));
     }
 
     @Test
@@ -155,7 +165,7 @@ public class ClienteResourceIntTest {
     public void getNonExistingCliente() throws Exception {
         // Get the cliente
         restClienteMockMvc.perform(get("/api/clientes/{id}", Long.MAX_VALUE))
-                .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -169,23 +179,40 @@ public class ClienteResourceIntTest {
         // Update the cliente
         Cliente updatedCliente = clienteRepository.findOne(cliente.getId());
         updatedCliente
-                .nome(UPDATED_NOME);
-        ClienteDTO clienteDTO = clienteMapper.clienteToClienteDTO(updatedCliente);
+            .nome(UPDATED_NOME);
 
         restClienteMockMvc.perform(put("/api/clientes")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(clienteDTO)))
-                .andExpect(status().isOk());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(updatedCliente)))
+            .andExpect(status().isOk());
 
         // Validate the Cliente in the database
-        List<Cliente> clientes = clienteRepository.findAll();
-        assertThat(clientes).hasSize(databaseSizeBeforeUpdate);
-        Cliente testCliente = clientes.get(clientes.size() - 1);
+        List<Cliente> clienteList = clienteRepository.findAll();
+        assertThat(clienteList).hasSize(databaseSizeBeforeUpdate);
+        Cliente testCliente = clienteList.get(clienteList.size() - 1);
         assertThat(testCliente.getNome()).isEqualTo(UPDATED_NOME);
 
-        // Validate the Cliente in ElasticSearch
+        // Validate the Cliente in Elasticsearch
         Cliente clienteEs = clienteSearchRepository.findOne(testCliente.getId());
         assertThat(clienteEs).isEqualToComparingFieldByField(testCliente);
+    }
+
+    @Test
+    @Transactional
+    public void updateNonExistingCliente() throws Exception {
+        int databaseSizeBeforeUpdate = clienteRepository.findAll().size();
+
+        // Create the Cliente
+
+        // If the entity doesn't have an ID, it will be created instead of just being updated
+        restClienteMockMvc.perform(put("/api/clientes")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(cliente)))
+            .andExpect(status().isCreated());
+
+        // Validate the Cliente in the database
+        List<Cliente> clienteList = clienteRepository.findAll();
+        assertThat(clienteList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
     @Test
@@ -198,16 +225,16 @@ public class ClienteResourceIntTest {
 
         // Get the cliente
         restClienteMockMvc.perform(delete("/api/clientes/{id}", cliente.getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
+        // Validate Elasticsearch is empty
         boolean clienteExistsInEs = clienteSearchRepository.exists(cliente.getId());
         assertThat(clienteExistsInEs).isFalse();
 
         // Validate the database is empty
-        List<Cliente> clientes = clienteRepository.findAll();
-        assertThat(clientes).hasSize(databaseSizeBeforeDelete - 1);
+        List<Cliente> clienteList = clienteRepository.findAll();
+        assertThat(clienteList).hasSize(databaseSizeBeforeDelete - 1);
     }
 
     @Test
@@ -223,5 +250,11 @@ public class ClienteResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(cliente.getId().intValue())))
             .andExpect(jsonPath("$.[*].nome").value(hasItem(DEFAULT_NOME.toString())));
+    }
+
+    @Test
+    @Transactional
+    public void equalsVerifier() throws Exception {
+        TestUtil.equalsVerifier(Cliente.class);
     }
 }

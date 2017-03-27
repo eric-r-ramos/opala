@@ -12,4 +12,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface SolicitanteRepository extends JpaRepository<Solicitante,Long> {
 
+    @Query("select solicitante from Solicitante solicitante where solicitante.login.login = ?#{principal.username}")
+    List<Solicitante> findByLoginIsCurrentUser();
+
 }

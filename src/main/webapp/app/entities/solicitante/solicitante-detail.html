@@ -8,9 +8,13 @@
         <dd>
             <span>{{vm.solicitante.nome}}</span>
         </dd>
+        <dt><span data-translate="opalaApp.solicitante.login">Login</span></dt>
+        <dd>
+            {{vm.solicitante.login.id}}
+        </dd>
         <dt><span data-translate="opalaApp.solicitante.cliente">Cliente</span></dt>
         <dd>
-            <a ui-sref="cliente-detail({id:vm.solicitante.clienteId})">{{vm.solicitante.clienteId}}</a>
+            <a ui-sref="cliente-detail({id:vm.solicitante.cliente.id})">{{vm.solicitante.cliente.id}}</a>
         </dd>
     </dl>
 
@@ -22,6 +26,6 @@
 
     <button type="button" ui-sref="solicitante-detail.edit({id:vm.solicitante.id})" class="btn btn-primary">
         <span class="glyphicon glyphicon-pencil"></span>
-        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
     </button>
 </div>

@@ -20,7 +20,7 @@ public class Veiculo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "marca")
@@ -136,7 +136,7 @@ public class Veiculo implements Serializable {
             return false;
         }
         Veiculo veiculo = (Veiculo) o;
-        if(veiculo.id == null || id == null) {
+        if (veiculo.id == null || id == null) {
             return false;
         }
         return Objects.equals(id, veiculo.id);

@@ -5,9 +5,9 @@
         .module('opalaApp')
         .controller('SolicitanteDetailController', SolicitanteDetailController);
 
-    SolicitanteDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Solicitante', 'Cliente', 'Agendamento'];
+    SolicitanteDetailController.$inject = ['$scope', '$rootScope', '$stateParams', 'previousState', 'entity', 'Solicitante', 'User', 'Cliente', 'Agendamento'];
 
-    function SolicitanteDetailController($scope, $rootScope, $stateParams, previousState, entity, Solicitante, Cliente, Agendamento) {
+    function SolicitanteDetailController($scope, $rootScope, $stateParams, previousState, entity, Solicitante, User, Cliente, Agendamento) {
         var vm = this;
 
         vm.solicitante = entity;

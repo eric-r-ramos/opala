@@ -1,8 +1,7 @@
 version: '2'
 services:
     opala-elasticsearch:
-        container_name: opala-elasticsearch
-        image: elasticsearch:2.4.0
+        image: elasticsearch:2.4.1
         # volumes:
         #     - ~/volumes/jhipster/opala/elasticsearch/:/usr/share/elasticsearch/data/
         ports:

@@ -5,35 +5,39 @@
         .module('opalaApp')
         .controller('VeiculoController', VeiculoController);
 
-    VeiculoController.$inject = ['$scope', '$state', 'Veiculo', 'VeiculoSearch', 'ParseLinks', 'AlertService', 'pagingParams', 'paginationConstants'];
+    VeiculoController.$inject = ['Veiculo', 'VeiculoSearch', 'ParseLinks', 'AlertService', 'paginationConstants'];
 
-    function VeiculoController ($scope, $state, Veiculo, VeiculoSearch, ParseLinks, AlertService, pagingParams, paginationConstants) {
+    function VeiculoController(Veiculo, VeiculoSearch, ParseLinks, AlertService, paginationConstants) {
+
         var vm = this;
-        
+
+        vm.veiculos = [];
         vm.loadPage = loadPage;
-        vm.predicate = pagingParams.predicate;
-        vm.reverse = pagingParams.ascending;
-        vm.transition = transition;
         vm.itemsPerPage = paginationConstants.itemsPerPage;
+        vm.page = 0;
+        vm.links = {
+            last: 0
+        };
+        vm.predicate = 'id';
+        vm.reset = reset;
+        vm.reverse = true;
         vm.clear = clear;
-        vm.search = search;
         vm.loadAll = loadAll;
-        vm.searchQuery = pagingParams.search;
-        vm.currentSearch = pagingParams.search;
+        vm.search = search;
 
         loadAll();
 
         function loadAll () {
-            if (pagingParams.search) {
+            if (vm.currentSearch) {
                 VeiculoSearch.query({
-                    query: pagingParams.search,
-                    page: pagingParams.page - 1,
+                    query: vm.currentSearch,
+                    page: vm.page,
                     size: vm.itemsPerPage,
                     sort: sort()
                 }, onSuccess, onError);
             } else {
                 Veiculo.query({
-                    page: pagingParams.page - 1,
+                    page: vm.page,
                     size: vm.itemsPerPage,
                     sort: sort()
                 }, onSuccess, onError);
@@ -45,50 +49,57 @@
                 }
                 return result;
             }
+
             function onSuccess(data, headers) {
                 vm.links = ParseLinks.parse(headers('link'));
                 vm.totalItems = headers('X-Total-Count');
-                vm.queryCount = vm.totalItems;
-                vm.veiculos = data;
-                vm.page = pagingParams.page;
+                for (var i = 0; i < data.length; i++) {
+                    vm.veiculos.push(data[i]);
+                }
             }
+
             function onError(error) {
                 AlertService.error(error.data.message);
             }
         }
 
-        function loadPage (page) {
-            vm.page = page;
-            vm.transition();
+        function reset () {
+            vm.page = 0;
+            vm.veiculos = [];
+            loadAll();
         }
 
-        function transition () {
-            $state.transitionTo($state.$current, {
-                page: vm.page,
-                sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                search: vm.currentSearch
-            });
+        function loadPage(page) {
+            vm.page = page;
+            loadAll();
+        }
+
+        function clear () {
+            vm.veiculos = [];
+            vm.links = {
+                last: 0
+            };
+            vm.page = 0;
+            vm.predicate = 'id';
+            vm.reverse = true;
+            vm.searchQuery = null;
+            vm.currentSearch = null;
+            vm.loadAll();
         }
 
         function search (searchQuery) {
             if (!searchQuery){
                 return vm.clear();
             }
-            vm.links = null;
-            vm.page = 1;
+            vm.veiculos = [];
+            vm.links = {
+                last: 0
+            };
+            vm.page = 0;
             vm.predicate = '_score';
             vm.reverse = false;
             vm.currentSearch = searchQuery;
-            vm.transition();
-        }
-
-        function clear () {
-            vm.links = null;
-            vm.page = 1;
-            vm.predicate = 'id';
-            vm.reverse = true;
-            vm.currentSearch = null;
-            vm.transition();
+            vm.loadAll();
         }
     }
 })();

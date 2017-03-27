@@ -20,7 +20,7 @@ public class Itinerario implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "descricao")
@@ -56,7 +56,7 @@ public class Itinerario implements Serializable {
             return false;
         }
         Itinerario itinerario = (Itinerario) o;
-        if(itinerario.id == null || id == null) {
+        if (itinerario.id == null || id == null) {
             return false;
         }
         return Objects.equals(id, itinerario.id);

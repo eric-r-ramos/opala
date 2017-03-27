@@ -11,7 +11,7 @@
         $stateProvider
         .state('solicitante', {
             parent: 'entity',
-            url: '/solicitante?page&sort&search',
+            url: '/solicitante',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'opalaApp.solicitante.home.title'
@@ -23,27 +23,7 @@
                     controllerAs: 'vm'
                 }
             },
-            params: {
-                page: {
-                    value: '1',
-                    squash: true
-                },
-                sort: {
-                    value: 'id,asc',
-                    squash: true
-                },
-                search: null
-            },
             resolve: {
-                pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
-                    return {
-                        page: PaginationUtil.parsePage($stateParams.page),
-                        sort: $stateParams.sort,
-                        predicate: PaginationUtil.parsePredicate($stateParams.sort),
-                        ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
-                    };
-                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('solicitante');
                     $translatePartialLoader.addPart('global');
@@ -52,7 +32,7 @@
             }
         })
         .state('solicitante-detail', {
-            parent: 'entity',
+            parent: 'solicitante',
             url: '/solicitante/{id}',
             data: {
                 authorities: ['ROLE_USER'],

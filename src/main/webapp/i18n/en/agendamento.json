@@ -30,7 +30,6 @@
             "motorista": "Motorista",
             "origem": "Origem",
             "solicitante": "Solicitante",
-            "veiculo": "Veiculo",
             "itinerario": "Itinerario",
             "listaPassageiros": "Lista Passageiros",
             "listaDestinos": "Lista Destinos"

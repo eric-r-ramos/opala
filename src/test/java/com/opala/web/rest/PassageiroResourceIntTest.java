@@ -4,32 +4,28 @@ import com.opala.OpalaApp;
 
 import com.opala.domain.Passageiro;
 import com.opala.repository.PassageiroRepository;
-import com.opala.service.PassageiroService;
 import com.opala.repository.search.PassageiroSearchRepository;
-import com.opala.service.dto.PassageiroDTO;
-import com.opala.service.mapper.PassageiroMapper;
+import com.opala.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.hamcrest.Matchers.hasItem;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -42,41 +38,38 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = OpalaApp.class)
 public class PassageiroResourceIntTest {
 
-    private static final String DEFAULT_NOME = "AAAAA";
-    private static final String UPDATED_NOME = "BBBBB";
+    private static final String DEFAULT_NOME = "AAAAAAAAAA";
+    private static final String UPDATED_NOME = "BBBBBBBBBB";
 
-    @Inject
+    @Autowired
     private PassageiroRepository passageiroRepository;
 
-    @Inject
-    private PassageiroMapper passageiroMapper;
-
-    @Inject
-    private PassageiroService passageiroService;
-
-    @Inject
+    @Autowired
     private PassageiroSearchRepository passageiroSearchRepository;
 
-    @Inject
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-    @Inject
+    @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
-    @Inject
+    @Autowired
+    private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
     private EntityManager em;
 
     private MockMvc restPassageiroMockMvc;
 
     private Passageiro passageiro;
 
-    @PostConstruct
+    @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        PassageiroResource passageiroResource = new PassageiroResource();
-        ReflectionTestUtils.setField(passageiroResource, "passageiroService", passageiroService);
+        PassageiroResource passageiroResource = new PassageiroResource(passageiroRepository, passageiroSearchRepository);
         this.restPassageiroMockMvc = MockMvcBuilders.standaloneSetup(passageiroResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -88,7 +81,7 @@ public class PassageiroResourceIntTest {
      */
     public static Passageiro createEntity(EntityManager em) {
         Passageiro passageiro = new Passageiro()
-                .nome(DEFAULT_NOME);
+            .nome(DEFAULT_NOME);
         return passageiro;
     }
 
@@ -104,22 +97,39 @@ public class PassageiroResourceIntTest {
         int databaseSizeBeforeCreate = passageiroRepository.findAll().size();
 
         // Create the Passageiro
-        PassageiroDTO passageiroDTO = passageiroMapper.passageiroToPassageiroDTO(passageiro);
-
         restPassageiroMockMvc.perform(post("/api/passageiros")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(passageiroDTO)))
-                .andExpect(status().isCreated());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(passageiro)))
+            .andExpect(status().isCreated());
 
         // Validate the Passageiro in the database
-        List<Passageiro> passageiros = passageiroRepository.findAll();
-        assertThat(passageiros).hasSize(databaseSizeBeforeCreate + 1);
-        Passageiro testPassageiro = passageiros.get(passageiros.size() - 1);
+        List<Passageiro> passageiroList = passageiroRepository.findAll();
+        assertThat(passageiroList).hasSize(databaseSizeBeforeCreate + 1);
+        Passageiro testPassageiro = passageiroList.get(passageiroList.size() - 1);
         assertThat(testPassageiro.getNome()).isEqualTo(DEFAULT_NOME);
 
-        // Validate the Passageiro in ElasticSearch
+        // Validate the Passageiro in Elasticsearch
         Passageiro passageiroEs = passageiroSearchRepository.findOne(testPassageiro.getId());
         assertThat(passageiroEs).isEqualToComparingFieldByField(testPassageiro);
+    }
+
+    @Test
+    @Transactional
+    public void createPassageiroWithExistingId() throws Exception {
+        int databaseSizeBeforeCreate = passageiroRepository.findAll().size();
+
+        // Create the Passageiro with an existing ID
+        passageiro.setId(1L);
+
+        // An entity with an existing ID cannot be created, so this API call must fail
+        restPassageiroMockMvc.perform(post("/api/passageiros")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(passageiro)))
+            .andExpect(status().isBadRequest());
+
+        // Validate the Alice in the database
+        List<Passageiro> passageiroList = passageiroRepository.findAll();
+        assertThat(passageiroList).hasSize(databaseSizeBeforeCreate);
     }
 
     @Test
@@ -128,12 +138,12 @@ public class PassageiroResourceIntTest {
         // Initialize the database
         passageiroRepository.saveAndFlush(passageiro);
 
-        // Get all the passageiros
+        // Get all the passageiroList
         restPassageiroMockMvc.perform(get("/api/passageiros?sort=id,desc"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.[*].id").value(hasItem(passageiro.getId().intValue())))
-                .andExpect(jsonPath("$.[*].nome").value(hasItem(DEFAULT_NOME.toString())));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(passageiro.getId().intValue())))
+            .andExpect(jsonPath("$.[*].nome").value(hasItem(DEFAULT_NOME.toString())));
     }
 
     @Test
@@ -155,7 +165,7 @@ public class PassageiroResourceIntTest {
     public void getNonExistingPassageiro() throws Exception {
         // Get the passageiro
         restPassageiroMockMvc.perform(get("/api/passageiros/{id}", Long.MAX_VALUE))
-                .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -169,23 +179,40 @@ public class PassageiroResourceIntTest {
         // Update the passageiro
         Passageiro updatedPassageiro = passageiroRepository.findOne(passageiro.getId());
         updatedPassageiro
-                .nome(UPDATED_NOME);
-        PassageiroDTO passageiroDTO = passageiroMapper.passageiroToPassageiroDTO(updatedPassageiro);
+            .nome(UPDATED_NOME);
 
         restPassageiroMockMvc.perform(put("/api/passageiros")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(passageiroDTO)))
-                .andExpect(status().isOk());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(updatedPassageiro)))
+            .andExpect(status().isOk());
 
         // Validate the Passageiro in the database
-        List<Passageiro> passageiros = passageiroRepository.findAll();
-        assertThat(passageiros).hasSize(databaseSizeBeforeUpdate);
-        Passageiro testPassageiro = passageiros.get(passageiros.size() - 1);
+        List<Passageiro> passageiroList = passageiroRepository.findAll();
+        assertThat(passageiroList).hasSize(databaseSizeBeforeUpdate);
+        Passageiro testPassageiro = passageiroList.get(passageiroList.size() - 1);
         assertThat(testPassageiro.getNome()).isEqualTo(UPDATED_NOME);
 
-        // Validate the Passageiro in ElasticSearch
+        // Validate the Passageiro in Elasticsearch
         Passageiro passageiroEs = passageiroSearchRepository.findOne(testPassageiro.getId());
         assertThat(passageiroEs).isEqualToComparingFieldByField(testPassageiro);
+    }
+
+    @Test
+    @Transactional
+    public void updateNonExistingPassageiro() throws Exception {
+        int databaseSizeBeforeUpdate = passageiroRepository.findAll().size();
+
+        // Create the Passageiro
+
+        // If the entity doesn't have an ID, it will be created instead of just being updated
+        restPassageiroMockMvc.perform(put("/api/passageiros")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(passageiro)))
+            .andExpect(status().isCreated());
+
+        // Validate the Passageiro in the database
+        List<Passageiro> passageiroList = passageiroRepository.findAll();
+        assertThat(passageiroList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
     @Test
@@ -198,16 +225,16 @@ public class PassageiroResourceIntTest {
 
         // Get the passageiro
         restPassageiroMockMvc.perform(delete("/api/passageiros/{id}", passageiro.getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
+        // Validate Elasticsearch is empty
         boolean passageiroExistsInEs = passageiroSearchRepository.exists(passageiro.getId());
         assertThat(passageiroExistsInEs).isFalse();
 
         // Validate the database is empty
-        List<Passageiro> passageiros = passageiroRepository.findAll();
-        assertThat(passageiros).hasSize(databaseSizeBeforeDelete - 1);
+        List<Passageiro> passageiroList = passageiroRepository.findAll();
+        assertThat(passageiroList).hasSize(databaseSizeBeforeDelete - 1);
     }
 
     @Test
@@ -223,5 +250,11 @@ public class PassageiroResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(passageiro.getId().intValue())))
             .andExpect(jsonPath("$.[*].nome").value(hasItem(DEFAULT_NOME.toString())));
+    }
+
+    @Test
+    @Transactional
+    public void equalsVerifier() throws Exception {
+        TestUtil.equalsVerifier(Passageiro.class);
     }
 }

@@ -6,7 +6,7 @@
             <div class="col-xs-4 no-padding-left">
                 <button class="btn btn-primary" ui-sref="agendamento.new" >
                     <span class="glyphicon glyphicon-plus"></span>
-                    <span class="hidden-xs"  data-translate="opalaApp.agendamento.home.createLabel">
+                    <span class="hidden-xs-down"  data-translate="opalaApp.agendamento.home.createLabel">
                         Create new Agendamento
                     </span>
                 </button>
@@ -34,7 +34,7 @@
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
-                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.reset()">
                     <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="data"><span data-translate="opalaApp.agendamento.data">Data</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="numeroRequisicao"><span data-translate="opalaApp.agendamento.numeroRequisicao">Numero Requisicao</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -46,16 +46,15 @@
                     <th jh-sort-by="sentido"><span data-translate="opalaApp.agendamento.sentido">Sentido</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="pagamento"><span data-translate="opalaApp.agendamento.pagamento">Pagamento</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="categoria"><span data-translate="opalaApp.agendamento.categoria">Categoria</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="clienteId"><span data-translate="opalaApp.agendamento.cliente">Cliente</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="motoristaId"><span data-translate="opalaApp.agendamento.motorista">Motorista</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="origemId"><span data-translate="opalaApp.agendamento.origem">Origem</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="solicitanteId"><span data-translate="opalaApp.agendamento.solicitante">Solicitante</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="veiculoId"><span data-translate="opalaApp.agendamento.veiculo">Veiculo</span> <span class="glyphicon glyphicon-sort"></span></th>
-                    <th jh-sort-by="itinerarioId"><span data-translate="opalaApp.agendamento.itinerario">Itinerario</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="cliente.id"><span data-translate="opalaApp.agendamento.cliente">Cliente</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="motorista.id"><span data-translate="opalaApp.agendamento.motorista">Motorista</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="origem.id"><span data-translate="opalaApp.agendamento.origem">Origem</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="solicitante.id"><span data-translate="opalaApp.agendamento.solicitante">Solicitante</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="itinerario.id"><span data-translate="opalaApp.agendamento.itinerario">Itinerario</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
                 <tr ng-repeat="agendamento in vm.agendamentos track by agendamento.id">
                     <td><a ui-sref="agendamento-detail({id:agendamento.id})">{{agendamento.id}}</a></td>
                     <td>{{agendamento.data | date:'medium'}}</td>
@@ -69,22 +68,19 @@
                     <td data-translate="{{'opalaApp.Pagamento.' + agendamento.pagamento}}">{{agendamento.pagamento}}</td>
                     <td data-translate="{{'opalaApp.Categoria.' + agendamento.categoria}}">{{agendamento.categoria}}</td>
                     <td>
-                        <a ui-sref="cliente-detail({id:agendamento.clienteId})">{{agendamento.clienteId}}</a>
+                        <a ui-sref="cliente-detail({id:agendamento.cliente.id})">{{agendamento.cliente.id}}</a>
                     </td>
                     <td>
-                        <a ui-sref="motorista-detail({id:agendamento.motoristaId})">{{agendamento.motoristaId}}</a>
+                        <a ui-sref="motorista-detail({id:agendamento.motorista.id})">{{agendamento.motorista.id}}</a>
                     </td>
                     <td>
-                        <a ui-sref="endereco-detail({id:agendamento.origemId})">{{agendamento.origemId}}</a>
+                        <a ui-sref="endereco-detail({id:agendamento.origem.id})">{{agendamento.origem.id}}</a>
                     </td>
                     <td>
-                        <a ui-sref="solicitante-detail({id:agendamento.solicitanteId})">{{agendamento.solicitanteId}}</a>
+                        <a ui-sref="solicitante-detail({id:agendamento.solicitante.id})">{{agendamento.solicitante.id}}</a>
                     </td>
                     <td>
-                        <a ui-sref="veiculo-detail({id:agendamento.veiculoId})">{{agendamento.veiculoId}}</a>
-                    </td>
-                    <td>
-                        <a ui-sref="itinerario-detail({id:agendamento.itinerarioId})">{{agendamento.itinerarioId}}</a>
+                        <a ui-sref="itinerario-detail({id:agendamento.itinerario.id})">{{agendamento.itinerario.id}}</a>
                     </td>
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
@@ -92,19 +88,19 @@
                                     ui-sref="agendamento-detail({id:agendamento.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="agendamento.edit({id:agendamento.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="agendamento.delete({id:agendamento.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
                             </button>
                         </div>
                     </td>
@@ -112,8 +108,4 @@
             </tbody>
         </table>
     </div>
-    <div class="text-center">
-        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
-    </div>
-    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
 </div>

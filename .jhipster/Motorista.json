@@ -1,6 +1,15 @@
 {
     "fluentMethods": true,
-    "relationships": [],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "login",
+            "otherEntityName": "user",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "motorista"
+        }
+    ],
     "fields": [
         {
             "fieldName": "nome",
@@ -17,7 +26,7 @@
     ],
     "changelogDate": "20161030192126",
     "entityTableName": "motorista",
-    "dto": "mapstruct",
-    "pagination": "pager",
-    "service": "serviceImpl"
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "no"
 }

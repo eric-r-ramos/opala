@@ -23,7 +23,7 @@ public class Cliente implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "nome")
@@ -65,13 +65,13 @@ public class Cliente implements Serializable {
     }
 
     public Cliente addListaSolicitante(Solicitante solicitante) {
-        listaSolicitantes.add(solicitante);
+        this.listaSolicitantes.add(solicitante);
         solicitante.setCliente(this);
         return this;
     }
 
     public Cliente removeListaSolicitante(Solicitante solicitante) {
-        listaSolicitantes.remove(solicitante);
+        this.listaSolicitantes.remove(solicitante);
         solicitante.setCliente(null);
         return this;
     }
@@ -89,7 +89,7 @@ public class Cliente implements Serializable {
             return false;
         }
         Cliente cliente = (Cliente) o;
-        if(cliente.id == null || id == null) {
+        if (cliente.id == null || id == null) {
             return false;
         }
         return Objects.equals(id, cliente.id);

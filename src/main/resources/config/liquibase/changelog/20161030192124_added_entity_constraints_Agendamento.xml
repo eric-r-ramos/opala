@@ -32,12 +32,6 @@
                                  referencedColumnNames="id"
                                  referencedTableName="solicitante"/>
 
-        <addForeignKeyConstraint baseColumnNames="veiculo_id"
-                                 baseTableName="agendamento"
-                                 constraintName="fk_agendamento_veiculo_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="veiculo"/>
-
         <addForeignKeyConstraint baseColumnNames="itinerario_id"
                                  baseTableName="agendamento"
                                  constraintName="fk_agendamento_itinerario_id"

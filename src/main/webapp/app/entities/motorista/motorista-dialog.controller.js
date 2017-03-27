@@ -5,9 +5,9 @@
         .module('opalaApp')
         .controller('MotoristaDialogController', MotoristaDialogController);
 
-    MotoristaDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Motorista'];
+    MotoristaDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', '$q', 'entity', 'Motorista', 'User'];
 
-    function MotoristaDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Motorista) {
+    function MotoristaDialogController ($timeout, $scope, $stateParams, $uibModalInstance, $q, entity, Motorista, User) {
         var vm = this;
 
         vm.motorista = entity;
@@ -15,6 +15,7 @@
         vm.datePickerOpenStatus = {};
         vm.openCalendar = openCalendar;
         vm.save = save;
+        vm.users = User.query();
 
         $timeout(function (){
             angular.element('.form-group:eq(1)>input').focus();

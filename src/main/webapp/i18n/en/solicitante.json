@@ -17,6 +17,7 @@
                 "title": "Solicitante"
             },
             "nome": "Nome",
+            "login": "Login",
             "cliente": "Cliente",
             "listaAgendamentos": "Lista Agendamentos"
         }

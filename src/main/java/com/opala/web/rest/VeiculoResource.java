@@ -1,10 +1,14 @@
 package com.opala.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.opala.service.VeiculoService;
+import com.opala.domain.Veiculo;
+
+import com.opala.repository.VeiculoRepository;
+import com.opala.repository.search.VeiculoSearchRepository;
 import com.opala.web.rest.util.HeaderUtil;
 import com.opala.web.rest.util.PaginationUtil;
-import com.opala.service.dto.VeiculoDTO;
+import io.swagger.annotations.ApiParam;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,10 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,49 +35,59 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class VeiculoResource {
 
     private final Logger log = LoggerFactory.getLogger(VeiculoResource.class);
+
+    private static final String ENTITY_NAME = "veiculo";
         
-    @Inject
-    private VeiculoService veiculoService;
+    private final VeiculoRepository veiculoRepository;
+
+    private final VeiculoSearchRepository veiculoSearchRepository;
+
+    public VeiculoResource(VeiculoRepository veiculoRepository, VeiculoSearchRepository veiculoSearchRepository) {
+        this.veiculoRepository = veiculoRepository;
+        this.veiculoSearchRepository = veiculoSearchRepository;
+    }
 
     /**
      * POST  /veiculos : Create a new veiculo.
      *
-     * @param veiculoDTO the veiculoDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new veiculoDTO, or with status 400 (Bad Request) if the veiculo has already an ID
+     * @param veiculo the veiculo to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new veiculo, or with status 400 (Bad Request) if the veiculo has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/veiculos")
     @Timed
-    public ResponseEntity<VeiculoDTO> createVeiculo(@RequestBody VeiculoDTO veiculoDTO) throws URISyntaxException {
-        log.debug("REST request to save Veiculo : {}", veiculoDTO);
-        if (veiculoDTO.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("veiculo", "idexists", "A new veiculo cannot already have an ID")).body(null);
+    public ResponseEntity<Veiculo> createVeiculo(@RequestBody Veiculo veiculo) throws URISyntaxException {
+        log.debug("REST request to save Veiculo : {}", veiculo);
+        if (veiculo.getId() != null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new veiculo cannot already have an ID")).body(null);
         }
-        VeiculoDTO result = veiculoService.save(veiculoDTO);
+        Veiculo result = veiculoRepository.save(veiculo);
+        veiculoSearchRepository.save(result);
         return ResponseEntity.created(new URI("/api/veiculos/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert("veiculo", result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
      * PUT  /veiculos : Updates an existing veiculo.
      *
-     * @param veiculoDTO the veiculoDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated veiculoDTO,
-     * or with status 400 (Bad Request) if the veiculoDTO is not valid,
-     * or with status 500 (Internal Server Error) if the veiculoDTO couldnt be updated
+     * @param veiculo the veiculo to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated veiculo,
+     * or with status 400 (Bad Request) if the veiculo is not valid,
+     * or with status 500 (Internal Server Error) if the veiculo couldnt be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/veiculos")
     @Timed
-    public ResponseEntity<VeiculoDTO> updateVeiculo(@RequestBody VeiculoDTO veiculoDTO) throws URISyntaxException {
-        log.debug("REST request to update Veiculo : {}", veiculoDTO);
-        if (veiculoDTO.getId() == null) {
-            return createVeiculo(veiculoDTO);
+    public ResponseEntity<Veiculo> updateVeiculo(@RequestBody Veiculo veiculo) throws URISyntaxException {
+        log.debug("REST request to update Veiculo : {}", veiculo);
+        if (veiculo.getId() == null) {
+            return createVeiculo(veiculo);
         }
-        VeiculoDTO result = veiculoService.save(veiculoDTO);
+        Veiculo result = veiculoRepository.save(veiculo);
+        veiculoSearchRepository.save(result);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert("veiculo", veiculoDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, veiculo.getId().toString()))
             .body(result);
     }
 
@@ -84,14 +96,12 @@ public class VeiculoResource {
      *
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and the list of veiculos in body
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping("/veiculos")
     @Timed
-    public ResponseEntity<List<VeiculoDTO>> getAllVeiculos(Pageable pageable)
-        throws URISyntaxException {
+    public ResponseEntity<List<Veiculo>> getAllVeiculos(@ApiParam Pageable pageable) {
         log.debug("REST request to get a page of Veiculos");
-        Page<VeiculoDTO> page = veiculoService.findAll(pageable);
+        Page<Veiculo> page = veiculoRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/veiculos");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -99,33 +109,30 @@ public class VeiculoResource {
     /**
      * GET  /veiculos/:id : get the "id" veiculo.
      *
-     * @param id the id of the veiculoDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the veiculoDTO, or with status 404 (Not Found)
+     * @param id the id of the veiculo to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the veiculo, or with status 404 (Not Found)
      */
     @GetMapping("/veiculos/{id}")
     @Timed
-    public ResponseEntity<VeiculoDTO> getVeiculo(@PathVariable Long id) {
+    public ResponseEntity<Veiculo> getVeiculo(@PathVariable Long id) {
         log.debug("REST request to get Veiculo : {}", id);
-        VeiculoDTO veiculoDTO = veiculoService.findOne(id);
-        return Optional.ofNullable(veiculoDTO)
-            .map(result -> new ResponseEntity<>(
-                result,
-                HttpStatus.OK))
-            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        Veiculo veiculo = veiculoRepository.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(veiculo));
     }
 
     /**
      * DELETE  /veiculos/:id : delete the "id" veiculo.
      *
-     * @param id the id of the veiculoDTO to delete
+     * @param id the id of the veiculo to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/veiculos/{id}")
     @Timed
     public ResponseEntity<Void> deleteVeiculo(@PathVariable Long id) {
         log.debug("REST request to delete Veiculo : {}", id);
-        veiculoService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("veiculo", id.toString())).build();
+        veiculoRepository.delete(id);
+        veiculoSearchRepository.delete(id);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
     /**
@@ -135,14 +142,12 @@ public class VeiculoResource {
      * @param query the query of the veiculo search 
      * @param pageable the pagination information
      * @return the result of the search
-     * @throws URISyntaxException if there is an error to generate the pagination HTTP headers
      */
     @GetMapping("/_search/veiculos")
     @Timed
-    public ResponseEntity<List<VeiculoDTO>> searchVeiculos(@RequestParam String query, Pageable pageable)
-        throws URISyntaxException {
+    public ResponseEntity<List<Veiculo>> searchVeiculos(@RequestParam String query, @ApiParam Pageable pageable) {
         log.debug("REST request to search for a page of Veiculos for query {}", query);
-        Page<VeiculoDTO> page = veiculoService.search(query, pageable);
+        Page<Veiculo> page = veiculoSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/veiculos");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

@@ -5,9 +5,9 @@
         .module('opalaApp')
         .controller('AgendamentoDialogController', AgendamentoDialogController);
 
-    AgendamentoDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Agendamento', 'Cliente', 'Motorista', 'Endereco', 'Solicitante', 'Veiculo', 'Itinerario', 'Passageiro'];
+    AgendamentoDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Agendamento', 'Cliente', 'Motorista', 'Endereco', 'Solicitante', 'Itinerario', 'Passageiro'];
 
-    function AgendamentoDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Agendamento, Cliente, Motorista, Endereco, Solicitante, Veiculo, Itinerario, Passageiro) {
+    function AgendamentoDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Agendamento, Cliente, Motorista, Endereco, Solicitante, Itinerario, Passageiro) {
         var vm = this;
 
         vm.agendamento = entity;
@@ -19,7 +19,6 @@
         vm.motoristas = Motorista.query();
         vm.enderecos = Endereco.query();
         vm.solicitantes = Solicitante.query();
-        vm.veiculos = Veiculo.query();
         vm.itinerarios = Itinerario.query();
         vm.passageiros = Passageiro.query();
 

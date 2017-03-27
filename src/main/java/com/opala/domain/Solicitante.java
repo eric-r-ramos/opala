@@ -23,11 +23,14 @@ public class Solicitante implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "nome")
     private String nome;
+
+    @ManyToOne
+    private User login;
 
     @ManyToOne
     private Cliente cliente;
@@ -58,6 +61,19 @@ public class Solicitante implements Serializable {
         this.nome = nome;
     }
 
+    public User getLogin() {
+        return login;
+    }
+
+    public Solicitante login(User user) {
+        this.login = user;
+        return this;
+    }
+
+    public void setLogin(User user) {
+        this.login = user;
+    }
+
     public Cliente getCliente() {
         return cliente;
     }
@@ -81,13 +97,13 @@ public class Solicitante implements Serializable {
     }
 
     public Solicitante addListaAgendamentos(Agendamento agendamento) {
-        listaAgendamentos.add(agendamento);
+        this.listaAgendamentos.add(agendamento);
         agendamento.setSolicitante(this);
         return this;
     }
 
     public Solicitante removeListaAgendamentos(Agendamento agendamento) {
-        listaAgendamentos.remove(agendamento);
+        this.listaAgendamentos.remove(agendamento);
         agendamento.setSolicitante(null);
         return this;
     }
@@ -105,7 +121,7 @@ public class Solicitante implements Serializable {
             return false;
         }
         Solicitante solicitante = (Solicitante) o;
-        if(solicitante.id == null || id == null) {
+        if (solicitante.id == null || id == null) {
             return false;
         }
         return Objects.equals(id, solicitante.id);

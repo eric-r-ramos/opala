@@ -11,7 +11,7 @@
         $stateProvider
         .state('veiculo', {
             parent: 'entity',
-            url: '/veiculo?page&sort&search',
+            url: '/veiculo',
             data: {
                 authorities: ['ROLE_USER'],
                 pageTitle: 'opalaApp.veiculo.home.title'
@@ -23,27 +23,7 @@
                     controllerAs: 'vm'
                 }
             },
-            params: {
-                page: {
-                    value: '1',
-                    squash: true
-                },
-                sort: {
-                    value: 'id,asc',
-                    squash: true
-                },
-                search: null
-            },
             resolve: {
-                pagingParams: ['$stateParams', 'PaginationUtil', function ($stateParams, PaginationUtil) {
-                    return {
-                        page: PaginationUtil.parsePage($stateParams.page),
-                        sort: $stateParams.sort,
-                        predicate: PaginationUtil.parsePredicate($stateParams.sort),
-                        ascending: PaginationUtil.parseAscending($stateParams.sort),
-                        search: $stateParams.search
-                    };
-                }],
                 translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
                     $translatePartialLoader.addPart('veiculo');
                     $translatePartialLoader.addPart('global');
@@ -52,7 +32,7 @@
             }
         })
         .state('veiculo-detail', {
-            parent: 'entity',
+            parent: 'veiculo',
             url: '/veiculo/{id}',
             data: {
                 authorities: ['ROLE_USER'],

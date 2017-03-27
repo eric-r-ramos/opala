@@ -46,27 +46,23 @@
         </dd>
         <dt><span data-translate="opalaApp.agendamento.cliente">Cliente</span></dt>
         <dd>
-            <a ui-sref="cliente-detail({id:vm.agendamento.clienteId})">{{vm.agendamento.clienteId}}</a>
+            <a ui-sref="cliente-detail({id:vm.agendamento.cliente.id})">{{vm.agendamento.cliente.id}}</a>
         </dd>
         <dt><span data-translate="opalaApp.agendamento.motorista">Motorista</span></dt>
         <dd>
-            <a ui-sref="motorista-detail({id:vm.agendamento.motoristaId})">{{vm.agendamento.motoristaId}}</a>
+            <a ui-sref="motorista-detail({id:vm.agendamento.motorista.id})">{{vm.agendamento.motorista.id}}</a>
         </dd>
         <dt><span data-translate="opalaApp.agendamento.origem">Origem</span></dt>
         <dd>
-            <a ui-sref="endereco-detail({id:vm.agendamento.origemId})">{{vm.agendamento.origemId}}</a>
+            <a ui-sref="endereco-detail({id:vm.agendamento.origem.id})">{{vm.agendamento.origem.id}}</a>
         </dd>
         <dt><span data-translate="opalaApp.agendamento.solicitante">Solicitante</span></dt>
         <dd>
-            <a ui-sref="solicitante-detail({id:vm.agendamento.solicitanteId})">{{vm.agendamento.solicitanteId}}</a>
-        </dd>
-        <dt><span data-translate="opalaApp.agendamento.veiculo">Veiculo</span></dt>
-        <dd>
-            <a ui-sref="veiculo-detail({id:vm.agendamento.veiculoId})">{{vm.agendamento.veiculoId}}</a>
+            <a ui-sref="solicitante-detail({id:vm.agendamento.solicitante.id})">{{vm.agendamento.solicitante.id}}</a>
         </dd>
         <dt><span data-translate="opalaApp.agendamento.itinerario">Itinerario</span></dt>
         <dd>
-            <a ui-sref="itinerario-detail({id:vm.agendamento.itinerarioId})">{{vm.agendamento.itinerarioId}}</a>
+            <a ui-sref="itinerario-detail({id:vm.agendamento.itinerario.id})">{{vm.agendamento.itinerario.id}}</a>
         </dd>
         <dt><span data-translate="opalaApp.agendamento.listaPassageiros">Lista Passageiros</span></dt>
         <dd>
@@ -90,6 +86,6 @@
 
     <button type="button" ui-sref="agendamento-detail.edit({id:vm.agendamento.id})" class="btn btn-primary">
         <span class="glyphicon glyphicon-pencil"></span>
-        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
     </button>
 </div>

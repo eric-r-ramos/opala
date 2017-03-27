@@ -1,6 +1,6 @@
 {
   "generator-jhipster": {
-    "jhipsterVersion": "3.10.0",
+    "jhipsterVersion": "4.1.1",
     "baseName": "opala",
     "packageName": "com.opala",
     "packageFolder": "com/opala",
@@ -30,6 +30,8 @@
       "pt-br",
       "en"
     ],
-    "serviceDiscoveryType": false
+    "serviceDiscoveryType": false,
+    "clientFramework": "angular1",
+    "clientPackageManager": "yarn"
   }
 }

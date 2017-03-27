@@ -20,7 +20,7 @@ public class Passageiro implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "nome")
@@ -56,7 +56,7 @@ public class Passageiro implements Serializable {
             return false;
         }
         Passageiro passageiro = (Passageiro) o;
-        if(passageiro.id == null || id == null) {
+        if (passageiro.id == null || id == null) {
             return false;
         }
         return Objects.equals(id, passageiro.id);

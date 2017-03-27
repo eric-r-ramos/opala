@@ -16,6 +16,10 @@
         <dd>
             <span>{{vm.motorista.vencimentoHabilitacao | date:'mediumDate'}}</span>
         </dd>
+        <dt><span data-translate="opalaApp.motorista.login">Login</span></dt>
+        <dd>
+            {{vm.motorista.login.id}}
+        </dd>
     </dl>
 
     <button type="submit"
@@ -26,6 +30,6 @@
 
     <button type="button" ui-sref="motorista-detail.edit({id:vm.motorista.id})" class="btn btn-primary">
         <span class="glyphicon glyphicon-pencil"></span>
-        <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"> Edit</span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
     </button>
 </div>

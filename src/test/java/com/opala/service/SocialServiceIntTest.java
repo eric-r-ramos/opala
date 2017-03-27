@@ -5,6 +5,7 @@ import com.opala.domain.Authority;
 import com.opala.domain.User;
 import com.opala.repository.AuthorityRepository;
 import com.opala.repository.UserRepository;
+import com.opala.repository.search.UserSearchRepository;
 import com.opala.service.MailService;
 
 import org.junit.Before;
@@ -12,16 +13,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.social.connect.*;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import javax.inject.Inject;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,14 +32,17 @@ import static org.mockito.Mockito.*;
 @Transactional
 public class SocialServiceIntTest {
 
-    @Inject
+    @Autowired
     private AuthorityRepository authorityRepository;
 
-    @Inject
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Inject
+    @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserSearchRepository userSearchRepository;
+
 
     @Mock
     private MailService mockMailService;
@@ -59,12 +62,8 @@ public class SocialServiceIntTest {
         doNothing().when(mockConnectionRepository).addConnection(anyObject());
         when(mockUsersConnectionRepository.createConnectionRepository(anyString())).thenReturn(mockConnectionRepository);
 
-        socialService = new SocialService();
-        ReflectionTestUtils.setField(socialService, "authorityRepository", authorityRepository);
-        ReflectionTestUtils.setField(socialService, "passwordEncoder", passwordEncoder);
-        ReflectionTestUtils.setField(socialService, "mailService", mockMailService);
-        ReflectionTestUtils.setField(socialService, "userRepository", userRepository);
-        ReflectionTestUtils.setField(socialService, "usersConnectionRepository", mockUsersConnectionRepository);
+        socialService = new SocialService(mockUsersConnectionRepository, authorityRepository,
+                passwordEncoder, userRepository, mockMailService, userSearchRepository);
     }
 
     @Test
@@ -74,6 +73,7 @@ public class SocialServiceIntTest {
             "mail@mail.com",
             "FIRST_NAME",
             "LAST_NAME",
+            "IMAGE_URL",
             "PROVIDER");
         socialService.createSocialUser(connection, "fr");
         MultiValueMap<String, Connection<?>> connectionsByProviderId = new LinkedMultiValueMap<>();
@@ -100,6 +100,7 @@ public class SocialServiceIntTest {
             "",
             "FIRST_NAME",
             "LAST_NAME",
+            "IMAGE_URL",
             "PROVIDER");
 
         // Exercise
@@ -112,11 +113,13 @@ public class SocialServiceIntTest {
         User user = createExistingUser("@LOGIN",
             "mail@mail.com",
             "OTHER_FIRST_NAME",
-            "OTHER_LAST_NAME");
+            "OTHER_LAST_NAME",
+            "OTHER_IMAGE_URL");
         Connection<?> connection = createConnection("@LOGIN",
             "",
             "FIRST_NAME",
             "LAST_NAME",
+            "IMAGE_URL",
             "PROVIDER");
 
         // Exercise
@@ -136,6 +139,7 @@ public class SocialServiceIntTest {
             "mail@mail.com",
             "FIRST_NAME",
             "LAST_NAME",
+            "IMAGE_URL",
             "PROVIDER");
 
         // Exercise
@@ -156,6 +160,7 @@ public class SocialServiceIntTest {
             "mail@mail.com",
             "FIRST_NAME",
             "LAST_NAME",
+            "IMAGE_URL",
             "PROVIDER");
 
         // Exercise
@@ -165,6 +170,7 @@ public class SocialServiceIntTest {
         User user = userRepository.findOneByEmail("mail@mail.com").get();
         assertThat(user.getFirstName()).isEqualTo("FIRST_NAME");
         assertThat(user.getLastName()).isEqualTo("LAST_NAME");
+        assertThat(user.getImageUrl()).isEqualTo("IMAGE_URL");
 
         // Teardown
         userRepository.delete(user);
@@ -177,6 +183,7 @@ public class SocialServiceIntTest {
             "mail@mail.com",
             "FIRST_NAME",
             "LAST_NAME",
+            "IMAGE_URL",
             "PROVIDER");
 
         // Exercise
@@ -200,6 +207,7 @@ public class SocialServiceIntTest {
             "mail@mail.com",
             "FIRST_NAME",
             "LAST_NAME",
+            "IMAGE_URL",
             "PROVIDER");
 
         // Exercise
@@ -220,6 +228,7 @@ public class SocialServiceIntTest {
             "mail@mail.com",
             "FIRST_NAME",
             "LAST_NAME",
+            "IMAGE_URL",
             "PROVIDER_OTHER_THAN_TWITTER");
 
         // Exercise
@@ -240,6 +249,7 @@ public class SocialServiceIntTest {
             "mail@mail.com",
             "FIRST_NAME",
             "LAST_NAME",
+            "IMAGE_URL",
             "twitter");
 
         // Exercise
@@ -260,6 +270,7 @@ public class SocialServiceIntTest {
             "mail@mail.com",
             "FIRST_NAME",
             "LAST_NAME",
+            "IMAGE_URL",
             "PROVIDER");
 
         // Exercise
@@ -279,12 +290,14 @@ public class SocialServiceIntTest {
         createExistingUser("@OTHER_LOGIN",
             "mail@mail.com",
             "OTHER_FIRST_NAME",
-            "OTHER_LAST_NAME");
+            "OTHER_LAST_NAME",
+            "OTHER_IMAGE_URL");
         long initialUserCount = userRepository.count();
         Connection<?> connection = createConnection("@LOGIN",
             "mail@mail.com",
             "FIRST_NAME",
             "LAST_NAME",
+            "IMAGE_URL",
             "PROVIDER");
 
         // Exercise
@@ -304,11 +317,13 @@ public class SocialServiceIntTest {
         createExistingUser("@OTHER_LOGIN",
             "mail@mail.com",
             "OTHER_FIRST_NAME",
-            "OTHER_LAST_NAME");
+            "OTHER_LAST_NAME",
+            "OTHER_IMAGE_URL");
         Connection<?> connection = createConnection("@LOGIN",
             "mail@mail.com",
             "FIRST_NAME",
             "LAST_NAME",
+            "IMAGE_URL",
             "PROVIDER");
 
         // Exercise
@@ -319,7 +334,7 @@ public class SocialServiceIntTest {
         assertThat(userToVerify.getLogin()).isEqualTo("@other_login");
         assertThat(userToVerify.getFirstName()).isEqualTo("OTHER_FIRST_NAME");
         assertThat(userToVerify.getLastName()).isEqualTo("OTHER_LAST_NAME");
-
+        assertThat(userToVerify.getImageUrl()).isEqualTo("OTHER_IMAGE_URL");
         // Teardown
         userRepository.delete(userToVerify);
     }
@@ -331,6 +346,7 @@ public class SocialServiceIntTest {
             "mail@mail.com",
             "FIRST_NAME",
             "LAST_NAME",
+            "IMAGE_URL",
             "PROVIDER");
 
         // Exercise
@@ -348,6 +364,7 @@ public class SocialServiceIntTest {
                                            String email,
                                            String firstName,
                                            String lastName,
+                                           String imageUrl,
                                            String providerId) {
         UserProfile userProfile = mock(UserProfile.class);
         when(userProfile.getEmail()).thenReturn(email);
@@ -359,6 +376,7 @@ public class SocialServiceIntTest {
         ConnectionKey key = new ConnectionKey(providerId, "PROVIDER_USER_ID");
         when(connection.fetchUserProfile()).thenReturn(userProfile);
         when(connection.getKey()).thenReturn(key);
+        when(connection.getImageUrl()).thenReturn(imageUrl);
 
         return connection;
     }
@@ -366,13 +384,15 @@ public class SocialServiceIntTest {
     private User createExistingUser(String login,
                                     String email,
                                     String firstName,
-                                    String lastName) {
+                                    String lastName,
+                                    String imageUrl) {
         User user = new User();
         user.setLogin(login);
         user.setPassword(passwordEncoder.encode("password"));
         user.setEmail(email);
         user.setFirstName(firstName);
         user.setLastName(lastName);
+        user.setImageUrl(imageUrl);
         return userRepository.saveAndFlush(user);
     }
 }

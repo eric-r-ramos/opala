@@ -6,7 +6,7 @@
             <div class="col-xs-4 no-padding-left">
                 <button class="btn btn-primary" ui-sref="veiculo.new" >
                     <span class="glyphicon glyphicon-plus"></span>
-                    <span class="hidden-xs"  data-translate="opalaApp.veiculo.home.createLabel">
+                    <span class="hidden-xs-down"  data-translate="opalaApp.veiculo.home.createLabel">
                         Create new Veiculo
                     </span>
                 </button>
@@ -34,7 +34,7 @@
     <div class="table-responsive">
         <table class="jh-table table table-striped">
             <thead>
-                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.reset()">
                     <th jh-sort-by="id"><span data-translate="global.field.id">ID</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="marca"><span data-translate="opalaApp.veiculo.marca">Marca</span> <span class="glyphicon glyphicon-sort"></span></th>
                     <th jh-sort-by="modelo"><span data-translate="opalaApp.veiculo.modelo">Modelo</span> <span class="glyphicon glyphicon-sort"></span></th>
@@ -45,7 +45,7 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody infinite-scroll="vm.loadPage(vm.page + 1)" infinite-scroll-disabled="vm.page >= vm.links['last']">
                 <tr ng-repeat="veiculo in vm.veiculos track by veiculo.id">
                     <td><a ui-sref="veiculo-detail({id:veiculo.id})">{{veiculo.id}}</a></td>
                     <td>{{veiculo.marca}}</td>
@@ -60,19 +60,19 @@
                                     ui-sref="veiculo-detail({id:veiculo.id})"
                                     class="btn btn-info btn-sm">
                                 <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.view"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.view"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="veiculo.edit({id:veiculo.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.edit"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.edit"></span>
                             </button>
                             <button type="submit"
                                     ui-sref="veiculo.delete({id:veiculo.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
-                                <span class="hidden-xs hidden-sm" data-translate="entity.action.delete"></span>
+                                <span class="hidden-sm-down" data-translate="entity.action.delete"></span>
                             </button>
                         </div>
                     </td>
@@ -80,8 +80,4 @@
             </tbody>
         </table>
     </div>
-    <div class="text-center">
-        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
-    </div>
-    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
 </div>

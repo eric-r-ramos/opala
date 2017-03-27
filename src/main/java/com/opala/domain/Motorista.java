@@ -21,7 +21,7 @@ public class Motorista implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "nome")
@@ -32,6 +32,10 @@ public class Motorista implements Serializable {
 
     @Column(name = "vencimento_habilitacao")
     private LocalDate vencimentoHabilitacao;
+
+    @OneToOne
+    @JoinColumn(unique = true)
+    private User login;
 
     public Long getId() {
         return id;
@@ -80,6 +84,19 @@ public class Motorista implements Serializable {
         this.vencimentoHabilitacao = vencimentoHabilitacao;
     }
 
+    public User getLogin() {
+        return login;
+    }
+
+    public Motorista login(User user) {
+        this.login = user;
+        return this;
+    }
+
+    public void setLogin(User user) {
+        this.login = user;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -89,7 +106,7 @@ public class Motorista implements Serializable {
             return false;
         }
         Motorista motorista = (Motorista) o;
-        if(motorista.id == null || id == null) {
+        if (motorista.id == null || id == null) {
             return false;
         }
         return Objects.equals(id, motorista.id);

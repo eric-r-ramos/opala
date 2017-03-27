@@ -4,34 +4,30 @@ import com.opala.OpalaApp;
 
 import com.opala.domain.Motorista;
 import com.opala.repository.MotoristaRepository;
-import com.opala.service.MotoristaService;
 import com.opala.repository.search.MotoristaSearchRepository;
-import com.opala.service.dto.MotoristaDTO;
-import com.opala.service.mapper.MotoristaMapper;
+import com.opala.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.hamcrest.Matchers.hasItem;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -44,47 +40,44 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = OpalaApp.class)
 public class MotoristaResourceIntTest {
 
-    private static final String DEFAULT_NOME = "AAAAA";
-    private static final String UPDATED_NOME = "BBBBB";
+    private static final String DEFAULT_NOME = "AAAAAAAAAA";
+    private static final String UPDATED_NOME = "BBBBBBBBBB";
 
-    private static final String DEFAULT_HABILITACAO = "AAAAA";
-    private static final String UPDATED_HABILITACAO = "BBBBB";
+    private static final String DEFAULT_HABILITACAO = "AAAAAAAAAA";
+    private static final String UPDATED_HABILITACAO = "BBBBBBBBBB";
 
     private static final LocalDate DEFAULT_VENCIMENTO_HABILITACAO = LocalDate.ofEpochDay(0L);
     private static final LocalDate UPDATED_VENCIMENTO_HABILITACAO = LocalDate.now(ZoneId.systemDefault());
 
-    @Inject
+    @Autowired
     private MotoristaRepository motoristaRepository;
 
-    @Inject
-    private MotoristaMapper motoristaMapper;
-
-    @Inject
-    private MotoristaService motoristaService;
-
-    @Inject
+    @Autowired
     private MotoristaSearchRepository motoristaSearchRepository;
 
-    @Inject
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
-    @Inject
+    @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
-    @Inject
+    @Autowired
+    private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
     private EntityManager em;
 
     private MockMvc restMotoristaMockMvc;
 
     private Motorista motorista;
 
-    @PostConstruct
+    @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        MotoristaResource motoristaResource = new MotoristaResource();
-        ReflectionTestUtils.setField(motoristaResource, "motoristaService", motoristaService);
+        MotoristaResource motoristaResource = new MotoristaResource(motoristaRepository, motoristaSearchRepository);
         this.restMotoristaMockMvc = MockMvcBuilders.standaloneSetup(motoristaResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -96,9 +89,9 @@ public class MotoristaResourceIntTest {
      */
     public static Motorista createEntity(EntityManager em) {
         Motorista motorista = new Motorista()
-                .nome(DEFAULT_NOME)
-                .habilitacao(DEFAULT_HABILITACAO)
-                .vencimentoHabilitacao(DEFAULT_VENCIMENTO_HABILITACAO);
+            .nome(DEFAULT_NOME)
+            .habilitacao(DEFAULT_HABILITACAO)
+            .vencimentoHabilitacao(DEFAULT_VENCIMENTO_HABILITACAO);
         return motorista;
     }
 
@@ -114,24 +107,41 @@ public class MotoristaResourceIntTest {
         int databaseSizeBeforeCreate = motoristaRepository.findAll().size();
 
         // Create the Motorista
-        MotoristaDTO motoristaDTO = motoristaMapper.motoristaToMotoristaDTO(motorista);
-
         restMotoristaMockMvc.perform(post("/api/motoristas")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(motoristaDTO)))
-                .andExpect(status().isCreated());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(motorista)))
+            .andExpect(status().isCreated());
 
         // Validate the Motorista in the database
-        List<Motorista> motoristas = motoristaRepository.findAll();
-        assertThat(motoristas).hasSize(databaseSizeBeforeCreate + 1);
-        Motorista testMotorista = motoristas.get(motoristas.size() - 1);
+        List<Motorista> motoristaList = motoristaRepository.findAll();
+        assertThat(motoristaList).hasSize(databaseSizeBeforeCreate + 1);
+        Motorista testMotorista = motoristaList.get(motoristaList.size() - 1);
         assertThat(testMotorista.getNome()).isEqualTo(DEFAULT_NOME);
         assertThat(testMotorista.getHabilitacao()).isEqualTo(DEFAULT_HABILITACAO);
         assertThat(testMotorista.getVencimentoHabilitacao()).isEqualTo(DEFAULT_VENCIMENTO_HABILITACAO);
 
-        // Validate the Motorista in ElasticSearch
+        // Validate the Motorista in Elasticsearch
         Motorista motoristaEs = motoristaSearchRepository.findOne(testMotorista.getId());
         assertThat(motoristaEs).isEqualToComparingFieldByField(testMotorista);
+    }
+
+    @Test
+    @Transactional
+    public void createMotoristaWithExistingId() throws Exception {
+        int databaseSizeBeforeCreate = motoristaRepository.findAll().size();
+
+        // Create the Motorista with an existing ID
+        motorista.setId(1L);
+
+        // An entity with an existing ID cannot be created, so this API call must fail
+        restMotoristaMockMvc.perform(post("/api/motoristas")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(motorista)))
+            .andExpect(status().isBadRequest());
+
+        // Validate the Alice in the database
+        List<Motorista> motoristaList = motoristaRepository.findAll();
+        assertThat(motoristaList).hasSize(databaseSizeBeforeCreate);
     }
 
     @Test
@@ -140,14 +150,14 @@ public class MotoristaResourceIntTest {
         // Initialize the database
         motoristaRepository.saveAndFlush(motorista);
 
-        // Get all the motoristas
+        // Get all the motoristaList
         restMotoristaMockMvc.perform(get("/api/motoristas?sort=id,desc"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.[*].id").value(hasItem(motorista.getId().intValue())))
-                .andExpect(jsonPath("$.[*].nome").value(hasItem(DEFAULT_NOME.toString())))
-                .andExpect(jsonPath("$.[*].habilitacao").value(hasItem(DEFAULT_HABILITACAO.toString())))
-                .andExpect(jsonPath("$.[*].vencimentoHabilitacao").value(hasItem(DEFAULT_VENCIMENTO_HABILITACAO.toString())));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(motorista.getId().intValue())))
+            .andExpect(jsonPath("$.[*].nome").value(hasItem(DEFAULT_NOME.toString())))
+            .andExpect(jsonPath("$.[*].habilitacao").value(hasItem(DEFAULT_HABILITACAO.toString())))
+            .andExpect(jsonPath("$.[*].vencimentoHabilitacao").value(hasItem(DEFAULT_VENCIMENTO_HABILITACAO.toString())));
     }
 
     @Test
@@ -171,7 +181,7 @@ public class MotoristaResourceIntTest {
     public void getNonExistingMotorista() throws Exception {
         // Get the motorista
         restMotoristaMockMvc.perform(get("/api/motoristas/{id}", Long.MAX_VALUE))
-                .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -185,27 +195,44 @@ public class MotoristaResourceIntTest {
         // Update the motorista
         Motorista updatedMotorista = motoristaRepository.findOne(motorista.getId());
         updatedMotorista
-                .nome(UPDATED_NOME)
-                .habilitacao(UPDATED_HABILITACAO)
-                .vencimentoHabilitacao(UPDATED_VENCIMENTO_HABILITACAO);
-        MotoristaDTO motoristaDTO = motoristaMapper.motoristaToMotoristaDTO(updatedMotorista);
+            .nome(UPDATED_NOME)
+            .habilitacao(UPDATED_HABILITACAO)
+            .vencimentoHabilitacao(UPDATED_VENCIMENTO_HABILITACAO);
 
         restMotoristaMockMvc.perform(put("/api/motoristas")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(motoristaDTO)))
-                .andExpect(status().isOk());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(updatedMotorista)))
+            .andExpect(status().isOk());
 
         // Validate the Motorista in the database
-        List<Motorista> motoristas = motoristaRepository.findAll();
-        assertThat(motoristas).hasSize(databaseSizeBeforeUpdate);
-        Motorista testMotorista = motoristas.get(motoristas.size() - 1);
+        List<Motorista> motoristaList = motoristaRepository.findAll();
+        assertThat(motoristaList).hasSize(databaseSizeBeforeUpdate);
+        Motorista testMotorista = motoristaList.get(motoristaList.size() - 1);
         assertThat(testMotorista.getNome()).isEqualTo(UPDATED_NOME);
         assertThat(testMotorista.getHabilitacao()).isEqualTo(UPDATED_HABILITACAO);
         assertThat(testMotorista.getVencimentoHabilitacao()).isEqualTo(UPDATED_VENCIMENTO_HABILITACAO);
 
-        // Validate the Motorista in ElasticSearch
+        // Validate the Motorista in Elasticsearch
         Motorista motoristaEs = motoristaSearchRepository.findOne(testMotorista.getId());
         assertThat(motoristaEs).isEqualToComparingFieldByField(testMotorista);
+    }
+
+    @Test
+    @Transactional
+    public void updateNonExistingMotorista() throws Exception {
+        int databaseSizeBeforeUpdate = motoristaRepository.findAll().size();
+
+        // Create the Motorista
+
+        // If the entity doesn't have an ID, it will be created instead of just being updated
+        restMotoristaMockMvc.perform(put("/api/motoristas")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(motorista)))
+            .andExpect(status().isCreated());
+
+        // Validate the Motorista in the database
+        List<Motorista> motoristaList = motoristaRepository.findAll();
+        assertThat(motoristaList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
     @Test
@@ -218,16 +245,16 @@ public class MotoristaResourceIntTest {
 
         // Get the motorista
         restMotoristaMockMvc.perform(delete("/api/motoristas/{id}", motorista.getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
 
-        // Validate ElasticSearch is empty
+        // Validate Elasticsearch is empty
         boolean motoristaExistsInEs = motoristaSearchRepository.exists(motorista.getId());
         assertThat(motoristaExistsInEs).isFalse();
 
         // Validate the database is empty
-        List<Motorista> motoristas = motoristaRepository.findAll();
-        assertThat(motoristas).hasSize(databaseSizeBeforeDelete - 1);
+        List<Motorista> motoristaList = motoristaRepository.findAll();
+        assertThat(motoristaList).hasSize(databaseSizeBeforeDelete - 1);
     }
 
     @Test
@@ -245,5 +272,11 @@ public class MotoristaResourceIntTest {
             .andExpect(jsonPath("$.[*].nome").value(hasItem(DEFAULT_NOME.toString())))
             .andExpect(jsonPath("$.[*].habilitacao").value(hasItem(DEFAULT_HABILITACAO.toString())))
             .andExpect(jsonPath("$.[*].vencimentoHabilitacao").value(hasItem(DEFAULT_VENCIMENTO_HABILITACAO.toString())));
+    }
+
+    @Test
+    @Transactional
+    public void equalsVerifier() throws Exception {
+        TestUtil.equalsVerifier(Motorista.class);
     }
 }

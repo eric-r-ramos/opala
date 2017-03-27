@@ -5,14 +5,15 @@
         .module('opalaApp')
         .controller('SolicitanteDialogController', SolicitanteDialogController);
 
-    SolicitanteDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Solicitante', 'Cliente', 'Agendamento'];
+    SolicitanteDialogController.$inject = ['$timeout', '$scope', '$stateParams', '$uibModalInstance', 'entity', 'Solicitante', 'User', 'Cliente', 'Agendamento'];
 
-    function SolicitanteDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Solicitante, Cliente, Agendamento) {
+    function SolicitanteDialogController ($timeout, $scope, $stateParams, $uibModalInstance, entity, Solicitante, User, Cliente, Agendamento) {
         var vm = this;
 
         vm.solicitante = entity;
         vm.clear = clear;
         vm.save = save;
+        vm.users = User.query();
         vm.clientes = Cliente.query();
         vm.agendamentos = Agendamento.query();
 
