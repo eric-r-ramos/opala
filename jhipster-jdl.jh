@@ -1,0 +1,119 @@
+
+
+entity Agendamento {
+	data ZonedDateTime,
+    numeroRequisicao String,
+    centroCusto String,
+    referencia String,
+    valor Long,
+    observacao String,
+    status Status,
+    sentido Sentido,
+    pagamento Pagamento,
+    categoria Categoria
+}
+
+entity Cliente{
+	nome String
+}
+
+entity Motorista{
+	nome String,
+    habilitacao String,
+    vencimentoHabilitacao LocalDate
+}
+
+enum Status{
+	AGENDADO, ENVIADO, CANCELADO, ACEITO, EM_EXECUCAO,
+    AGUARDANDO_INICIO, EXECUTADO, APROVADO, PAGO, FINALIZADO
+}
+
+enum Sentido{
+	LEVAR, BUSCAR, ADISPOSICAO_RETORNO_ATE_2H, ADISPOSICAO_RETORNO_ATE_8H
+}
+
+enum Pagamento{
+	FATURADO, DIRETO
+}
+
+
+entity Passageiro{
+	nome String
+}
+
+entity Veiculo{
+    marca String,
+    modelo String,
+    cor String,
+    placa String,
+    ano String,
+    ativo Boolean
+}
+
+entity Solicitante{
+	nome String,
+}
+
+
+enum Categoria{
+	EXECUTIVO, LUXO
+
+}
+
+entity Itinerario{
+	descricao String
+}
+
+entity Endereco{
+	linha1 String,
+    linha2 String,
+    cidade String,
+    estado String,
+    cep String	
+}
+
+
+relationship ManyToOne{
+	Agendamento{cliente} to Cliente
+}
+
+relationship ManyToOne{
+	Agendamento{motorista} to Motorista
+}
+
+relationship ManyToMany{
+	Agendamento{listaPassageiros} to Passageiro
+}
+
+relationship OneToMany{
+	Cliente{listaSolicitante} to Solicitante{cliente}
+}
+
+relationship ManyToOne{
+	Agendamento{origem} to Endereco
+}
+
+relationship ManyToMany{
+	Agendamento{listaDestinos} to Endereco
+}
+
+relationship ManyToOne{
+	Agendamento{solicitante} to Solicitante{listaAgendamentos}
+}
+
+relationship OneToOne{
+	Motorista{login} to User
+}
+
+relationship ManyToOne{
+	Solicitante{login} to User
+}
+
+relationship ManyToOne{
+	Agendamento{origem} to Endereco
+}
+relationship ManyToOne{
+	Agendamento{itinerario} to Itinerario
+}
+
+paginate all with infinite-scroll
